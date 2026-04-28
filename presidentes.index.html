@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presidentes do Brasil — CACD</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0e0c;
+  --surface: #1a1814;
+  --surface2: #141210;
+  --border: #2e2a22;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --cream: #f0e8d8;
+  --muted: #8a7f6e;
+  --text: #d8cfc0;
+  --text-sm: #b0a898;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topo fixo */
+.fixed-top {
+  flex-shrink: 0;
+  background: var(--surface2);
+  border-bottom: 2px solid var(--border);
+  z-index: 100;
+}
+
+.page-header {
+  padding: 20px 32px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header .tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: 0.2em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 6px;
+}
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem; color: var(--cream);
+}
+.page-header p { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+
+.filter-bar {
+  padding: 8px 32px;
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.filter-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase;
+}
+.filter-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 2px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06);
+}
+
+/* Scroll container */
+.scroll-area {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Tabela */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 1600px;
+  width: 100%;
+}
+
+thead th {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--gold); background: var(--surface2);
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--gold);
+  border-right: 1px solid var(--border);
+  border-top: none;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  white-space: nowrap;
+  text-align: left;
+}
+
+thead th:first-child {
+  min-width: 175px;
+  left: 0;
+  z-index: 80;
+  border-right: 2px solid var(--gold);
+}
+
+tr.era-header td {
+  background: #252118;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold-light);
+  padding: 6px 14px;
+  border-bottom: 1px solid #3e3a30;
+}
+tr.era-header td:first-child {
+  position: sticky; left: 0; z-index: 10;
+  background: #252118;
+}
+
+tbody tr.pres-row {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+tbody tr.pres-row:hover { background: rgba(201,168,76,0.04); }
+tbody tr.pres-row.hidden { display: none; }
+
+td {
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+td.name-col {
+  position: sticky; left: 0;
+  background: var(--surface);
+  border-right: 2px solid var(--gold);
+  min-width: 175px; z-index: 10;
+}
+tr.pres-row:hover td.name-col { background: #1f1d19; }
+
+.pres-name { font-weight: 500; color: var(--cream); font-size: 12.5px; display: block; }
+.pres-period {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px; color: var(--gold); margin-top: 2px; display: block;
+}
+.pres-state {
+  font-size: 10px; color: var(--muted);
+  display: inline-block;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 2px; padding: 1px 5px; margin-top: 4px;
+}
+.era-tag {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 5px; border-radius: 2px; margin-top: 5px;
+}
+.era-imp   { background: rgba(139,90,47,0.2);  color: #d4a96a; border: 1px solid rgba(139,90,47,0.4); }
+.era-vrep  { background: rgba(47,90,139,0.2);  color: #7aaad4; border: 1px solid rgba(47,90,139,0.4); }
+.era-var   { background: rgba(139,47,47,0.2);  color: #d47a7a; border: 1px solid rgba(139,47,47,0.4); }
+.era-demo  { background: rgba(58,122,74,0.2);  color: #7ad49a; border: 1px solid rgba(58,122,74,0.4); }
+.era-mil   { background: rgba(100,100,100,0.2);color: #c0c0c0; border: 1px solid rgba(100,100,100,0.4); }
+.era-nova  { background: rgba(106,58,122,0.2); color: #c07ad4; border: 1px solid rgba(106,58,122,0.4); }
+
+.tag-pill {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px; padding: 1px 5px; border-radius: 2px; margin: 1px 1px 1px 0;
+}
+.tag-lib  { background: rgba(58,122,74,0.15);  color: #7ad49a; border: 1px solid rgba(58,122,74,0.3); }
+.tag-nac  { background: rgba(139,47,47,0.15);  color: #d47a7a; border: 1px solid rgba(139,47,47,0.3); }
+.tag-pos  { background: rgba(47,90,139,0.15);  color: #7aaad4; border: 1px solid rgba(47,90,139,0.3); }
+.tag-dev  { background: rgba(201,168,76,0.15); color: #c9a84c; border: 1px solid rgba(201,168,76,0.3); }
+.tag-neo  { background: rgba(106,58,122,0.15); color: #c07ad4; border: 1px solid rgba(106,58,122,0.3); }
+.tag-pop  { background: rgba(139,90,47,0.15);  color: #d4a96a; border: 1px solid rgba(139,90,47,0.3); }
+.tag-mil2 { background: rgba(80,80,80,0.2);    color: #b0b0b0; border: 1px solid rgba(100,100,100,0.3); }
+
+ul.mini { padding-left: 13px; margin: 0; }
+ul.mini li { margin-bottom: 2px; font-size: 11.5px; color: var(--text-sm); }
+ul.mini li::marker { color: var(--gold); }
+
+.const-badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+  padding: 2px 6px; border-radius: 2px; white-space: nowrap;
+  background: rgba(201,168,76,0.1); color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+}
+
+.col-pensamento  { min-width: 130px; }
+.col-economia    { min-width: 180px; }
+.col-pext        { min-width: 200px; }
+.col-eventos     { min-width: 220px; }
+.col-parceiros   { min-width: 150px; }
+.col-vizinhos    { min-width: 180px; }
+.col-const       { min-width: 100px; }
+</style>
+</head>
+<body>
+
+<div class="fixed-top">
+  <div class="page-header">
+    <div class="tag">CACD · História do Brasil · Política Externa</div>
+    <h1>Presidentes do Brasil</h1>
+    <p>Estado · Período · Pensamento · Economia · Política Externa · Parceiros · Vizinhos · Constituição</p>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-label">Filtrar por era:</span>
+    <button class="filter-btn active" onclick="filterEra('all',this)">Todos</button>
+    <button class="filter-btn" onclick="filterEra('imp',this)">Império/Marechal</button>
+    <button class="filter-btn" onclick="filterEra('vrep',this)">Rep. Velha</button>
+    <button class="filter-btn" onclick="filterEra('var',this)">Era Vargas</button>
+    <button class="filter-btn" onclick="filterEra('demo',this)">Democracia 45–64</button>
+    <button class="filter-btn" onclick="filterEra('mil',this)">Ditadura Militar</button>
+    <button class="filter-btn" onclick="filterEra('nova',this)">Nova República</button>
+  </div>
+</div>
+
+<div class="scroll-area">
+  <table>
+    <thead>
+      <tr>
+        <th>Presidente</th>
+        <th class="col-pensamento">Linha de Pensamento</th>
+        <th class="col-economia">Base Econômica</th>
+        <th class="col-pext">Política Externa (resumo)</th>
+        <th class="col-eventos">3 Eventos Principais — Pol. Externa</th>
+        <th class="col-parceiros">Parceiros Comerciais</th>
+        <th class="col-vizinhos">Relação c/ Vizinhos</th>
+        <th class="col-const">Constituição</th>
+      </tr>
+    </thead>
+    <tbody>
+
+<!-- REPÚBLICA DA ESPADA (1889–1894) -->
+<tr class="era-header"><td colspan="8">⬛ REPÚBLICA DA ESPADA (1889–1894)</td></tr>
+
+<tr class="pres-row" data-era="imp">
+  <td class="name-col">
+    <span class="pres-name">Deodoro da Fonseca</span>
+    <span class="pres-period">1889–1891</span>
+    <span class="pres-state">Rio Grande do Sul</span>
+    <span class="era-tag era-imp">Rep. da Espada</span>
+  </td>
+  <td><span class="tag-pill tag-pos">Positivismo</span><span class="tag-pill tag-mil2">Militarismo</span><br>Republicanismo autoritário; influência positivista do Exército.</td>
+  <td>Política de Encilhamento (Rui Barbosa): expansão creditícia, emissão descontrolada de moeda, especulação financeira. Crise inflacionária intensa.</td>
+  <td>Transição do regime imperial. Reconhecimento internacional da República. Continuidade das relações com Europa e EUA. Sem grandes iniciativas autônomas.</td>
+  <td>
+    <ul class="mini">
+      <li>Reconhecimento da República pelos EUA (1889)</li>
+      <li>Manutenção dos tratados do Império</li>
+      <li>Encerramento da questão da dívida imperial com credores europeus</li>
+    </ul>
+  </td>
+  <td>Reino Unido, EUA, França (herança imperial)</td>
+  <td>Tensões com Argentina pela hegemonia platina. Relação cautelosa com Uruguai e Paraguai.</td>
+  <td><span class="const-badge">Const. 1891</span><br><small>(promulgada durante seu gov.)</small></td>
+</tr>
+
+<tr class="pres-row" data-era="imp">
+  <td class="name-col">
+    <span class="pres-name">Floriano Peixoto</span>
+    <span class="pres-period">1891–1894</span>
+    <span class="pres-state">Alagoas</span>
+    <span class="era-tag era-imp">Rep. da Espada</span>
+  </td>
+  <td><span class="tag-pill tag-pos">Positivismo</span><span class="tag-pill tag-nac">Nacionalismo</span><br>"Marechal de Ferro". Republicanismo intransigente, centralização, combate às forças monarquistas.</td>
+  <td>Reversão parcial do Encilhamento. Foco na estabilidade política interna. Pouco espaço para política econômica ativa.</td>
+  <td>Afirmação da República contra forças internas (Revolta da Armada, Revolução Federalista). Política externa subordinada à consolidação interna. Apoio americano implícito.</td>
+  <td>
+    <ul class="mini">
+      <li>Derrota da Revolta da Armada (1893–94)</li>
+      <li>Bloqueio de navios portugueses (crise com Portugal)</li>
+      <li>Derrota da Revolução Federalista com apoio federal</li>
+    </ul>
+  </td>
+  <td>Reino Unido, EUA (apoio político à República)</td>
+  <td>Conflito interno com gaúchos (Revolução Federalista). Fronteiras platinas estáveis. Relação tensa com Argentina.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<!-- REPÚBLICA VELHA / OLIGÁRQUICA -->
+<tr class="era-header"><td colspan="8">🟤 REPÚBLICA VELHA / OLIGÁRQUICA (1894–1930)</td></tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Prudente de Morais</span>
+    <span class="pres-period">1894–1898</span>
+    <span class="pres-state">São Paulo</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>1º presidente civil. Liberalismo oligárquico paulista. Consolidação do regime civil contra o militarismo.</td>
+  <td>Crise fiscal herdada do Encilhamento. Negociação da dívida externa. Início da dependência do café como eixo exportador. Ortodoxia financeira.</td>
+  <td>Barão do Rio Branco ainda não era chanceler, mas base da política externa já se firma: aproximação com EUA, resolução de litígios territoriais.</td>
+  <td>
+    <ul class="mini">
+      <li>Arbitragem de Cleveland: vitória na Questão das Missões (1895)</li>
+      <li>Acordo de refinanciamento da dívida com credores britânicos (Funding Loan, 1898)</li>
+      <li>Supressão da Guerra de Canudos (1896–97)</li>
+    </ul>
+  </td>
+  <td>Reino Unido (crédito), EUA (café), Argentina (comércio regional)</td>
+  <td>Resolução do litígio das Missões com Argentina via arbitragem americana. Relação estável com Uruguai e Paraguai.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Campos Sales</span>
+    <span class="pres-period">1898–1902</span>
+    <span class="pres-state">São Paulo</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Consolidador do sistema oligárquico. Criador da "Política dos Governadores". Ortodoxia financeira.</td>
+  <td>Funding Loan com Rothschild (1898): moratória parcial da dívida, ajuste fiscal severo, deflação, desvalorização do mil-réis.</td>
+  <td>Política dos Governadores como base interna. Política externa ainda presidida por chanceleres anteriores a Rio Branco.</td>
+  <td>
+    <ul class="mini">
+      <li>Funding Loan com banqueiros britânicos (1898)</li>
+      <li>Início das negociações sobre o Acre (questão boliviana)</li>
+      <li>Aproximação comercial com EUA via reciprocidade tarifária</li>
+    </ul>
+  </td>
+  <td>Reino Unido (financiamento), EUA (café), Europa continental</td>
+  <td>Relações estáveis. Tensão latente com Bolívia pelo Acre.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Rodrigues Alves</span>
+    <span class="pres-period">1902–1906</span>
+    <span class="pres-state">São Paulo</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><span class="tag-pill tag-dev">Modernização</span><br>Modernização urbana (reforma do Rio). Rio Branco como chanceler — auge da política externa.</td>
+  <td>Boom do café. Política de valorização do café (Convênio de Taubaté, 1906). Reforma urbana do Rio: saneamento, abertura da Av. Central.</td>
+  <td>Período áureo da diplomacia do Barão do Rio Branco. Definição definitiva das fronteiras brasileiras. "Americanismo" pragmático.</td>
+  <td>
+    <ul class="mini">
+      <li>Tratado de Petrópolis: aquisição do Acre da Bolívia (1903)</li>
+      <li>Arbitragem da Questão do Amapá com a França</li>
+      <li>3ª Conferência Internacional Americana (Rio de Janeiro, 1906)</li>
+    </ul>
+  </td>
+  <td>EUA (café, política), Reino Unido (capital), Argentina (rivalidade)</td>
+  <td>Solução definitiva do Acre (Bolívia). Definição de fronteiras com todos os vizinhos. Rivalidade cordial com Argentina.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Afonso Pena</span>
+    <span class="pres-period">1906–1909</span>
+    <span class="pres-state">Minas Gerais</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Café com leite: 1ª vez de Minas na presidência. Desenvolvimento e imigração.</td>
+  <td>Convênio de Taubaté em vigor (valorização do café). Investimentos em infraestrutura ferroviária. Incentivo à imigração europeia.</td>
+  <td>Continuação de Rio Branco como chanceler. Participação ativa em conferências internacionais. 2ª Conferência de Paz de Haia (1907).</td>
+  <td>
+    <ul class="mini">
+      <li>2ª Conferência de Paz de Haia (1907) — Rui Barbosa defende igualdade jurídica dos Estados</li>
+      <li>Acordo de amizade e comércio com Argentina</li>
+      <li>Início de negociações comerciais com países latino-americanos</li>
+    </ul>
+  </td>
+  <td>EUA, Reino Unido, Alemanha (cresce), Argentina</td>
+  <td>Relações estáveis. Política de boa vizinhança com Argentina, Uruguai e Paraguai.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Nilo Peçanha</span>
+    <span class="pres-period">1909–1910</span>
+    <span class="pres-state">Rio de Janeiro</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Assumiu com morte de Afonso Pena. Governo de transição. Criação do Serviço de Proteção ao Índio (SPI).</td>
+  <td>Continuidade da política cafeeira. Governo curto sem grandes inovações econômicas.</td>
+  <td>Continuação de Rio Branco na chancelaria. Nenhuma grande iniciativa de política externa própria.</td>
+  <td>
+    <ul class="mini">
+      <li>Manutenção da política de Rio Branco</li>
+      <li>Relações comerciais com EUA e Europa estáveis</li>
+      <li>Criação do SPI (política indigenista com repercussão externa)</li>
+    </ul>
+  </td>
+  <td>EUA, Reino Unido</td>
+  <td>Estáveis. Sem conflitos relevantes.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Hermes da Fonseca</span>
+    <span class="pres-period">1910–1914</span>
+    <span class="pres-state">Rio Grande do Sul</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-mil2">Militarismo</span><span class="tag-pill tag-pos">Positivismo</span><br>"Política das Salvações": intervenção federal em estados para derrubar oligarquias.</td>
+  <td>Crise do café com queda de preços internacionais. Endividamento externo. Revolta da Chibata (1910).</td>
+  <td>Morte de Rio Branco (1912) — fim de uma era diplomática. Política externa perde protagonismo.</td>
+  <td>
+    <ul class="mini">
+      <li>Morte do Barão do Rio Branco (1912)</li>
+      <li>Revolta da Chibata (1910) — questão de imagem internacional</li>
+      <li>Brasil assina a Convenção de Haia sobre leis da guerra</li>
+    </ul>
+  </td>
+  <td>EUA, Reino Unido, Alemanha</td>
+  <td>Estáveis, sem grandes iniciativas.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Wenceslau Brás</span>
+    <span class="pres-period">1914–1918</span>
+    <span class="pres-state">Minas Gerais</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Governo da 1ª Guerra Mundial. Posição inicial de neutralidade, depois beligerância ao lado dos Aliados.</td>
+  <td>1ª Guerra impacta exportações de café. Início involuntário de industrialização por substituição de importações.</td>
+  <td>Neutralidade inicial na 1ª Guerra, depois ruptura com Alemanha após afundamentos de navios brasileiros. Declaração de guerra à Alemanha (1917).</td>
+  <td>
+    <ul class="mini">
+      <li>Afundamento do navio Paraná pela Alemanha (1917)</li>
+      <li>Declaração de guerra à Alemanha (outubro 1917)</li>
+      <li>Envio de missão naval e médica à Europa (DNOG)</li>
+    </ul>
+  </td>
+  <td>EUA e Aliados (guerra), Reino Unido</td>
+  <td>Estáveis. Participação dos Aliados diferencia o Brasil.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Epitácio Pessoa</span>
+    <span class="pres-period">1919–1922</span>
+    <span class="pres-state">Paraíba</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Único nordestino da República Velha. Chegou à presidência vindo de Paris (Conferência de Paz).</td>
+  <td>Valorização do café. Déficit público para obras do Nordeste. Política de obras hídricas (açudes).</td>
+  <td>Participou da Conferência de Paz de Paris (1919) como chefe da delegação. Brasil integra a Liga das Nações.</td>
+  <td>
+    <ul class="mini">
+      <li>Participação na Conferência de Paz de Paris (1919)</li>
+      <li>Ingresso do Brasil na Liga das Nações (1920)</li>
+      <li>Eleito juiz brasileiro no Tribunal Permanente de Justiça Internacional</li>
+    </ul>
+  </td>
+  <td>EUA, Reino Unido, França (pós-guerra)</td>
+  <td>Estáveis. Brasil ganha prestígio regional com atuação em Paris.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Arthur Bernardes</span>
+    <span class="pres-period">1922–1926</span>
+    <span class="pres-state">Minas Gerais</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Governo sob estado de sítio permanente. Combate ao tenentismo. Saída do Brasil da Liga das Nações.</td>
+  <td>Crise cafeeira e pressão por valorização. Endividamento externo. Coluna Prestes (1925–27).</td>
+  <td>Saída dramática da Liga das Nações após derrota de candidatura a membro permanente do Conselho. Postura defensiva e isolacionista.</td>
+  <td>
+    <ul class="mini">
+      <li>Saída do Brasil da Liga das Nações (1926)</li>
+      <li>Revolta tenentista de 1922 (Forte de Copacabana)</li>
+      <li>Coluna Prestes: atravessa o interior do Brasil (1925–27)</li>
+    </ul>
+  </td>
+  <td>EUA, Reino Unido, Argentina</td>
+  <td>Estáveis, sem iniciativas relevantes. Saída da Liga aumenta isolamento diplomático.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<tr class="pres-row" data-era="vrep">
+  <td class="name-col">
+    <span class="pres-name">Washington Luís</span>
+    <span class="pres-period">1926–1930</span>
+    <span class="pres-state">São Paulo</span>
+    <span class="era-tag era-vrep">Rep. Velha</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</span><br>Último presidente da República Velha. Derrubado em outubro de 1930.</td>
+  <td>Padrão-ouro e câmbio fixo. Impacto da Grande Depressão de 1929: colapso do preço do café.</td>
+  <td>Retorno ao multilateralismo após saída da Liga. Reingresso na órbita americana.</td>
+  <td>
+    <ul class="mini">
+      <li>Crise de 1929: impacto devastador sobre as exportações de café</li>
+      <li>Ruptura do pacto café-com-leite</li>
+      <li>Deposição por junta militar (24/out/1930) — fim da República Velha</li>
+    </ul>
+  </td>
+  <td>EUA, Reino Unido, Argentina</td>
+  <td>Estáveis. Crise interna domina o período; política externa secundária.</td>
+  <td><span class="const-badge">Const. 1891</span></td>
+</tr>
+
+<!-- ERA VARGAS -->
+<tr class="era-header"><td colspan="8">🔴 ERA VARGAS (1930–1945 / 1950–1954)</td></tr>
+
+<tr class="pres-row" data-era="var">
+  <td class="name-col">
+    <span class="pres-name">Getúlio Vargas</span>
+    <span class="pres-period">1930–1945</span>
+    <span class="pres-state">Rio Grande do Sul</span>
+    <span class="era-tag era-var">Era Vargas</span>
+  </td>
+  <td><span class="tag-pill tag-nac">Nacionalismo</span><span class="tag-pill tag-dev">Desenvolvimentismo</span><span class="tag-pill tag-pop">Trabalhismo</span><br>Estado forte, industrialização, trabalhismo como política de massas. Estado Novo (1937–45).</td>
+  <td>Ruptura com liberalismo agroexportador. ISI. Criação de estatais: CSN (1941), Vale do Rio Doce (1942). CLT (1943).</td>
+  <td>Equidistância pragmática entre EUA e Alemanha (1930–42). Entrada ao lado dos Aliados em 1942.</td>
+  <td>
+    <ul class="mini">
+      <li>Afundamentos de navios por submarinos alemães → declaração de guerra ao Eixo (1942)</li>
+      <li>Negociação de Volta Redonda com EUA (1940–41)</li>
+      <li>Envio da FEB à Itália (1944–45)</li>
+    </ul>
+  </td>
+  <td>EUA (guerra), Argentina (rivalidade), Reino Unido, Alemanha (até 1942)</td>
+  <td>Rivalidade histórica com Argentina (Perón x Vargas). Relação próxima com Uruguai e Paraguai.</td>
+  <td><span class="const-badge">Const. 1934</span><br><span class="const-badge" style="margin-top:4px;display:inline-block">Const. 1937</span></td>
+</tr>
+
+<!-- DEMOCRACIA 1945–1964 -->
+<tr class="era-header"><td colspan="8">🟢 DEMOCRACIA LIBERAL (1945–1964)</td></tr>
+
+<tr class="pres-row" data-era="demo">
+  <td class="name-col">
+    <span class="pres-name">Eurico Gaspar Dutra</span>
+    <span class="pres-period">1946–1951</span>
+    <span class="pres-state">Mato Grosso</span>
+    <span class="era-tag era-demo">Democracia</span>
+  </td>
+  <td><span class="tag-pill tag-lib">Liberalismo</
