@@ -15,7 +15,7 @@ header{background:#0f0c06;padding:.9rem 1.6rem;display:flex;align-items:center;j
 .hl h1{font-family:'Playfair Display',serif;font-size:clamp(.95rem,2vw,1.4rem);font-weight:900;color:#f5f0e8;line-height:1.2}
 .hl h1 em{color:var(--gold);font-style:normal}
 .hl p{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:#7a6a52;margin-top:.2rem;letter-spacing:.1em;text-transform:uppercase}
-.legend-bar{background:#13100a;border-bottom:1px solid rgba(184,134,11,.2);padding:.4rem 1.6rem;display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;flex-shrink:0;max-height:70px;overflow-y:auto}
+.legend-bar{background:#13100a;border-bottom:1px solid rgba(184,134,11,.2);padding:.4rem 1.6rem;display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;flex-shrink:0;max-height:80px;overflow-y:auto}
 .leg-item{display:flex;align-items:center;gap:.35rem;font-family:'IBM Plex Mono',monospace;font-size:.56rem;color:#8a7a62;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:color .2s}
 .leg-item:hover{color:#f5f0e8}
 .leg-sw{width:13px;height:13px;border-radius:2px;flex-shrink:0}
@@ -107,7 +107,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB'
 }).addTo(map);
 
-// Cores por região histórica (baseadas na sua imagem)
+// Cores por região histórica
 const regionColors = {
   'Território Original': '#c8685a',
   'Cedido pela Espanha (1494)': '#d4956a',
@@ -123,37 +123,48 @@ const regionColors = {
   'Cedido pela França (1816)': '#78c8d8'
 };
 
-// Mapeamento de cada estado para sua região histórica
-// Baseado na história territorial do Brasil
+// Mapeamento por estado (baseado na história)
 const stateToRegion = {
-  // Território Original (litoral do Nordeste e Sudeste)
+  // Território Original (litoral nordeste/sudeste)
   'PE': 'Território Original', 'PB': 'Território Original', 'RN': 'Território Original',
   'CE': 'Território Original', 'PI': 'Território Original', 'AL': 'Território Original',
   'SE': 'Território Original', 'BA': 'Território Original', 'ES': 'Território Original',
-  'RJ': 'Território Original', 'SP': 'Território Original',
+  'RJ': 'Território Original', 'SP': 'Território Original', 'PR': 'Território Original',
   
-  // Cedido pela Espanha (área central)
+  // Cedido pela Espanha (centro-oeste)
   'MG': 'Cedido pela Espanha (1494)', 'GO': 'Cedido pela Espanha (1494)',
   'DF': 'Cedido pela Espanha (1494)', 'TO': 'Cedido pela Espanha (1494)',
+  'MT': 'Cedido pela Espanha (1494)',
   
-  // Peru/Espanha (Amazonas)
+  // Peru/Espanha (Amazônia)
   'AM': 'Cedido pelo Peru/Espanha (1650)', 'PA': 'Cedido pelo Peru/Espanha (1650)',
-  'RR': 'Cedido pelo Peru/Espanha (1650)', 'AP': 'Cedido pela França (1816)',
+  'RR': 'Cedido pelo Peru/Espanha (1650)', 
   
-  // Colômbia
-  'AC': 'Cedido pela Bolívia (1903) — Acre',
+  // França
+  'AP': 'Cedido pela França (1816)',
   
   // Bolívia
-  'RO': 'Cedido pela Bolívia (1860)', 'MT': 'Cedido pela Bolívia (1860)',
+  'AC': 'Cedido pela Bolívia (1903) — Acre', 'RO': 'Cedido pela Bolívia (1860)',
   
   // Paraguai
-  'MS': 'Cedido pelo Paraguai (1870)', 'PR': 'Cedido pelo Paraguai (1870)',
+  'MS': 'Cedido pelo Paraguai (1870)',
   
   // Argentina
   'SC': 'Cedido pela Argentina (1816)', 'RS': 'Cedido pela Argentina (1801)'
 };
 
-// Dados detalhados por região (para o painel)
+// Nomes completos dos estados (para fallback)
+const stateNames = {
+  'AC': 'Acre', 'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
+  'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo', 'GO': 'Goiás',
+  'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul', 'MG': 'Minas Gerais',
+  'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná', 'PE': 'Pernambuco', 'PI': 'Piauí',
+  'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte', 'RS': 'Rio Grande do Sul',
+  'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina', 'SP': 'São Paulo',
+  'SE': 'Sergipe', 'TO': 'Tocantins'
+};
+
+// Dados detalhados por região
 const regionDetails = {
   'Território Original': {
     sub: 'A leste da Linha de Tordesilhas · A partir de 1494',
@@ -171,45 +182,45 @@ const regionDetails = {
   'Cedido pelo Peru/Espanha (1650)': {
     sub: 'Grande expansão central e norte — Amazônia',
     events: [
-      { n: "Expedição de Pedro Teixeira", b: "br", bl: "Expansão", d: "1637–1638", l: [{ f: "🇧🇷", r: "Capitão", n: "Pedro Teixeira" }], re: "Navegou todo o Amazonas até Quito.", mo: "Afirmar posse portuguesa durante a União Ibérica.", co: "Precedente de controle lusitano sobre o Amazonas.", le: "Primeira demarcação efetiva do Amazonas.", rp: "Afastou Peru/Espanha da bacia amazônica." }
+      { n: "Expedição de Pedro Teixeira", b: "br", bl: "Expansão", d: "1637–1638", l: [{ f: "🇧🇷", r: "Capitão", n: "Pedro Teixeira" }], re: "Navegou todo o Amazonas até Quito, plantando marcos de posse.", mo: "Afirmar posse portuguesa durante a União Ibérica.", co: "Precedente de controle lusitano sobre o Amazonas.", le: "Primeira demarcação efetiva do Amazonas como território português.", rp: "Afastou definitivamente Peru/Espanha da bacia amazônica central." }
     ]
   },
   'Cedido pela Bolívia (1903) — Acre': {
     sub: 'Tratado de Petrópolis · Revolução Acreana',
     events: [
-      { n: "Revolução Acreana e Tratado de Petrópolis", b: "bc", bl: "Conflito/Tratado", d: "1899–1903", l: [{ f: "🇧🇷", r: "Presidente", n: "Rodrigues Alves/Rio Branco" }, { f: "🇧🇴", r: "Presidente", n: "José Manuel Pando" }], re: "Seringueiros brasileiros no Acre boliviano se rebelaram. O Brasil interveio e o Tratado de Petrópolis (1903) cedeu o Acre ao Brasil.", mo: "Riqueza da borracha. ~60.000 brasileiros viviam no Acre.", co: "Brasil obteve 191.000 km².", le: "Símbolo máximo da diplomacia Rio Branco.", rp: "Causou ressentimento duradouro na Bolívia." }
+      { n: "Revolução Acreana e Tratado de Petrópolis", b: "bc", bl: "Conflito/Tratado", d: "1899–1903", l: [{ f: "🇧🇷", r: "Presidente", n: "Rodrigues Alves/Rio Branco" }, { f: "🇧🇴", r: "Presidente", n: "José Manuel Pando" }], re: "Seringueiros brasileiros no Acre boliviano se rebelaram. O Brasil interveio e o Tratado de Petrópolis (1903) cedeu o Acre ao Brasil.", mo: "Riqueza da borracha. ~60.000 brasileiros viviam no Acre boliviano.", co: "Brasil obteve 191.000 km². Bolívia recebeu compensações.", le: "Símbolo máximo da diplomacia Rio Branco. Plácido de Castro é herói nacional.", rp: "Causou ressentimento duradouro na Bolívia." }
     ]
   },
   'Cedido pela Bolívia (1860)': {
     sub: 'Alto Madeira / Guaporé / Fronteira MT',
     events: [
-      { n: "Tratado de Ayacucho", b: "bt", bl: "Tratado", d: "1867", l: [{ f: "🇧🇷", r: "Imperador", n: "D. Pedro II" }, { f: "🇧🇴", r: "Presidente", n: "Mariano Melgarejo" }], re: "Fixou fronteira pelo paralelo 10°20'.", mo: "Demarcação após independência boliviana.", co: "Acre ficou em zona ambígua.", le: "Semente da crise de 1903.", rp: "Exemplo de acordos vagos que criam conflitos." }
+      { n: "Tratado de Ayacucho (1867)", b: "bt", bl: "Tratado", d: "27 de março de 1867", l: [{ f: "🇧🇷", r: "Imperador", n: "D. Pedro II" }, { f: "🇧🇴", r: "Presidente", n: "Mariano Melgarejo" }], re: "Fixou a fronteira norte pelo paralelo 10°20' e o rio Madeira.", mo: "Demarcação necessária após a independência boliviana.", co: "Fronteira parcialmente delimitada. O Acre ficou em zona ambígua.", le: "A imprecisão gerou décadas de tensão, culminando na crise de 1903.", rp: "Exemplo clássico de como acordos vagos criam conflitos futuros." }
     ]
   },
   'Cedido pelo Paraguai (1870)': {
     sub: 'Guerra da Tríplice Aliança · Ganhos Territoriais',
     events: [
-      { n: "Guerra do Paraguai", b: "bc", bl: "Guerra", d: "1864–1870", l: [{ f: "🇧🇷", r: "Imperador", n: "D. Pedro II" }, { f: "🇵🇾", r: "Ditador", n: "Francisco Solano López" }], re: "Maior guerra da América do Sul. Paraguai invadiu RS e MT.", mo: "Solano López buscava hegemonia regional.", co: "Paraguai perdeu 140.000 km² para Brasil e Argentina.", le: "Brasil emergiu como potência militar regional.", rp: "Acelerou a Proclamação da República (1889)." }
+      { n: "Guerra do Paraguai (Tríplice Aliança)", b: "bc", bl: "Guerra", d: "1864–1870", l: [{ f: "🇧🇷", r: "Imperador", n: "D. Pedro II" }, { f: "🇵🇾", r: "Ditador", n: "Francisco Solano López" }], re: "A maior guerra da história da América do Sul. O Paraguai invadiu o Rio Grande do Sul e Mato Grosso.", mo: "Solano López buscava hegemonia regional e saída para o mar.", co: "Paraguai perdeu 140.000 km² para Brasil e Argentina. País foi devastado.", le: "Brasil emergiu como potência militar regional dominante.", rp: "O imenso custo humano acelerou a crise do Império e contribuiu para a Proclamação da República (1889)." }
     ]
   },
   'Cedido pela Argentina/Espanha (1801)': {
     sub: 'Missões Orientais · Noroeste do Rio Grande do Sul',
     events: [
-      { n: "Tomada das Missões Orientais", b: "bc", bl: "Conflito", d: "1801", l: [{ f: "🇧🇷", r: "Capitania do RS", n: "Borges do Canto" }], re: "Tropas luso-brasileiras tomaram os Sete Povos das Missões.", mo: "Guerra das Laranjas na Europa.", co: "Brasil incorporou o NW do RS.", le: "Definiu o extremo noroeste do RS.", rp: "Argentina reconheceu em 1857." },
-      { n: "Questão de Palmas — Arbitragem Cleveland", b: "bd", bl: "Arbitragem", d: "1893–1895", l: [{ f: "🇧🇷", r: "Presidente", n: "Floriano Peixoto" }, { f: "🇦🇷", r: "Presidente", n: "Luis Sáenz Peña" }], re: "EUA arbitrou a favor do Brasil.", mo: "Região rica em erva-mate.", co: "Brasil ganhou 30.621 km² (SW do Paraná).", le: "Primeira grande vitória de Rio Branco.", rp: "Consagrou a arbitragem internacional." }
+      { n: "Tomada das Missões Orientais", b: "bc", bl: "Conflito", d: "1801", l: [{ f: "🇧🇷", r: "Capitania do RS", n: "Borges do Canto" }], re: "Aproveitando a Guerra das Laranjas, tropas luso-brasileiras tomaram os Sete Povos das Missões em apenas 10 dias.", mo: "Guerra europeia criou oportunidade geopolítica.", co: "Brasil incorporou as Missões (atual NW do RS).", le: "Definiu o extremo noroeste do RS. As ruínas jesuíticas são Patrimônio da UNESCO.", rp: "A Argentina independente assinou o Tratado de 1857 reconhecendo a posse brasileira." },
+      { n: "Questão de Palmas — Arbitragem Cleveland", b: "bd", bl: "Arbitragem", d: "1893–1895", l: [{ f: "🇧🇷", r: "Presidente", n: "Floriano Peixoto" }, { f: "🇦🇷", r: "Presidente", n: "Luis Sáenz Peña" }], re: "O presidente dos EUA Grover Cleveland arbitrou a disputa de 30.621 km² a favor do Brasil.", mo: "Região rica em erva-mate e madeira.", co: "Brasil ganhou o sudoeste do Paraná.", le: "Primeira grande vitória diplomática do Barão do Rio Branco.", rp: "Consagrou a arbitragem internacional como mecanismo preferido do Brasil." }
     ]
   },
   'Cedido pela Argentina (1816)': {
     sub: 'Cisplatina · Banda Oriental',
     events: [
-      { n: "Província Cisplatina", b: "bc", bl: "Conflito", d: "1816–1821", l: [{ f: "🇧🇷", r: "Rei", n: "D. João VI" }, { f: "🇺🇾", r: "Revolucionário", n: "José Artigas" }], re: "Banda Oriental incorporada como Cisplatina.", mo: "Conter a revolução artiguista.", co: "Artigas exilado no Paraguai.", le: "Gerou nacionalismo uruguaio.", rp: "Contribuiu para instabilidade do Império." },
-      { n: "Independência do Uruguai", b: "bc", bl: "Guerra", d: "1825–1828", l: [{ f: "🇧🇷", r: "Imperador", n: "D. Pedro I" }, { f: "🇺🇾", r: "Líderes", n: "Lavalleja/Rivera" }], re: "Criação do Uruguai como Estado-tampão.", mo: "Grã-Bretanha não queria hegemonia no Prata.", co: "Brasil perdeu a Cisplatina.", le: "Uruguai nasceu por interesse britânico.", rp: "Contribuiu para abdicação de D. Pedro I." }
+      { n: "Província Cisplatina", b: "bc", bl: "Conflito", d: "1816–1821", l: [{ f: "🇧🇷", r: "Rei", n: "D. João VI" }, { f: "🇺🇾", r: "Revolucionário", n: "José Artigas" }], re: "Tropas lusitanas invadiram a Banda Oriental. Em 1821 a região foi incorporada como Província Cisplatina.", mo: "Conter a influência revolucionária de Artigas e garantir a margem norte do Prata.", co: "Artigas foi exilado no Paraguai.", le: "Gerou o nacionalismo uruguaio.", rp: "A incorporação foi impopular e contribuiu para a instabilidade do Império." }
     ]
   },
   'Cedido pela França (1816)': {
     sub: 'Amapá · Questão do Oiapoque',
     events: [
-      { n: "Questão do Amapá — Arbitragem de Berna", b: "bd", bl: "Arbitragem", d: "1895–1900", l: [{ f: "🇧🇷", r: "Presidente", n: "Prudente de Morais" }, { f: "🇫🇷", r: "Presidente", n: "Félix Faure" }], re: "Suíça decidiu a favor do Brasil.", mo: "Descoberta de ouro na região.", co: "Brasil garantiu o Amapá.", le: "Primeira grande vitória de Rio Branco.", rp: "Lançou Rio Branco à cena nacional." }
+      { n: "Ocupação Portuguesa da Guiana Francesa", b: "bc", bl: "Conflito", d: "1809–1817", l: [{ f: "🇧🇷", r: "Príncipe Regente", n: "D. João VI" }, { f: "🇫🇷", r: "Imperador", n: "Napoleão Bonaparte" }], re: "D. João VI ordenou a tomada da Guiana Francesa como represália à invasão napoleônica.", mo: "Retaliação pela invasão francesa de Portugal.", co: "Portugal ocupou a Guiana Francesa de 1809 a 1817.", le: "Deixou pendente a questão do limite norte do Brasil.", rp: "Criou décadas de ambiguidade sobre o Amapá." },
+      { n: "Questão do Amapá — Arbitragem de Berna", b: "bd", bl: "Arbitragem", d: "1895–1900", l: [{ f: "🇧🇷", r: "Presidente", n: "Prudente de Morais" }, { f: "🇫🇷", r: "Presidente", n: "Félix Faure" }], re: "O Conselho Federal Suíço arbitrou a favor do Brasil em 1° de dezembro de 1900.", mo: "Descoberta de ouro na região e interesse francês em expandir a Guiana.", co: "Brasil garantiu o Amapá. Fronteira fixada no rio Oiapoque.", le: "Primeira grande vitória diplomática do Barão do Rio Branco.", rp: "Lançou Rio Branco à cena nacional e abriu seu ciclo de consolidação das fronteiras." }
     ]
   }
 };
@@ -217,57 +228,54 @@ const regionDetails = {
 // Construir legenda
 const legendBar = document.getElementById('legendBar');
 Object.entries(regionColors).forEach(([name, color]) => {
-  const item = document.createElement('div');
-  item.className = 'leg-item';
-  item.setAttribute('data-region', name);
-  item.innerHTML = `<div class="leg-sw" style="background:${color}"></div>${name}`;
-  item.onclick = () => openRegionDetail(name);
-  legendBar.appendChild(item);
+  if (regionDetails[name]) {
+    const item = document.createElement('div');
+    item.className = 'leg-item';
+    item.setAttribute('data-region', name);
+    item.innerHTML = `<div class="leg-sw" style="background:${color}"></div>${name}`;
+    item.onclick = () => openRegionDetail(name);
+    legendBar.appendChild(item);
+  }
 });
 
 let currentLayer = null;
 
-// Carregar GeoJSON dos estados do Brasil
-fetch('https://raw.githubusercontent.com/codeforgermany/click-here/main/brazil-states.json')
+// Carregar GeoJSON dos estados
+fetch('https://servicodados.ibge.gov.br/api/v3/malhas/estados?formato=application/vnd.geo+json&qualidade=minima')
   .then(response => response.json())
-  .then(data => {
-    // Fallback: tentar IBGE
-    if (!data || !data.features) {
-      return fetch('https://servicodados.ibge.gov.br/api/v3/malhas/estados?formato=application/vnd.geo+json&qualidade=minima')
-        .then(r => r.json());
-    }
-    return data;
-  })
   .then(geojson => {
     currentLayer = L.geoJSON(geojson, {
       style: function(feature) {
-        const sigla = feature.properties.sigla || feature.properties.SIGLA || feature.properties.UF;
+        const sigla = feature.properties.SIGLA || feature.properties.sigla;
         const region = stateToRegion[sigla] || 'Território Original';
         return {
           fillColor: regionColors[region] || '#666',
           fillOpacity: 0.7,
           color: '#fff',
-          weight: 1,
-          opacity: 0.8
+          weight: 1.5,
+          opacity: 0.9
         };
       },
       onEachFeature: function(feature, layer) {
-        const sigla = feature.properties.sigla || feature.properties.SIGLA || feature.properties.UF;
-        const nome = feature.properties.nome || feature.properties.NM_ESTADO || feature.properties.Nome || sigla;
+        const sigla = feature.properties.SIGLA || feature.properties.sigla;
+        const nome = stateNames[sigla] || feature.properties.NM_ESTADO || sigla;
         const region = stateToRegion[sigla] || 'Território Original';
         
-        layer.bindTooltip(`${nome} — ${region}`);
+        layer.bindTooltip(`${nome}<br><span style="font-size:10px;color:#b8860b">${region}</span>`, {
+          className: 'custom-tooltip',
+          sticky: true
+        });
         
         layer.on('click', () => {
           openRegionDetail(region);
         });
         
         layer.on('mouseover', function() {
-          this.setStyle({ fillOpacity: 0.9, weight: 2 });
+          this.setStyle({ fillOpacity: 0.9, weight: 2.5 });
         });
         
         layer.on('mouseout', function() {
-          this.setStyle({ fillOpacity: 0.7, weight: 1 });
+          this.setStyle({ fillOpacity: 0.7, weight: 1.5 });
         });
       }
     }).addTo(map);
@@ -338,39 +346,34 @@ function closePanel() {
   document.getElementById('pContent').style.display = 'none';
 }
 
-// Linha de Tordesilhas
-let tordesilhasOn = false;
-const tordesilhasPoints = [[-33, -50], [-5, -45], [5, -35]];
+// ============================================
+// LINHA DE TORDESILHAS CORRETA (meridiano 46° W)
+// ============================================
+// O Tratado de Tordesilhas (1494) estabeleceu uma linha a 370 léguas a oeste de Cabo Verde.
+// Isso corresponde aproximadamente ao meridiano 46° W (varia ligeiramente conforme a fonte).
+// No Brasil, essa linha corta os estados do Pará, Tocantins, Goiás, Minas Gerais e São Paulo.
+
+const tordesilhasPoints = [
+  [5.5, -46],    // Norte (Amapá/Pará)
+  [0, -46],      // Equador
+  [-5, -46],     // Nordeste
+  [-10, -46],    // Centro-Norte
+  [-15, -46],    // Goiás/MG
+  [-20, -46],    // São Paulo
+  [-25, -46],    // Paraná
+  [-30, -46],    // Rio Grande do Sul
+  [-33, -46]     // Extremo Sul
+];
+
 const tordesilhasLine = L.polyline(tordesilhasPoints, {
   color: '#b8860b',
-  weight: 3,
-  dashArray: '8, 6',
+  weight: 4,
+  dashArray: '10, 8',
   opacity: 0
 }).addTo(map);
 
-document.getElementById('tordBtn').addEventListener('click', () => {
-  tordesilhasOn = !tordesilhasOn;
-  tordesilhasLine.setStyle({ opacity: tordesilhasOn ? 1 : 0 });
-  document.getElementById('tordBtn').classList.toggle('active', tordesilhasOn);
-});
-
-// Adicionar fallback manual
-setTimeout(() => {
-  if (!currentLayer) {
-    console.log('Tentando carregar GeoJSON alternativo...');
-    fetch('https://servicodados.ibge.gov.br/api/v3/malhas/estados?formato=application/vnd.geo+json&qualidade=minima')
-      .then(r => r.json())
-      .then(geojson => {
-        L.geoJSON(geojson, {
-          style: { fillColor: '#666', fillOpacity: 0.5, color: '#fff', weight: 1 },
-          onEachFeature: (f, l) => {
-            const nome = f.properties.NM_ESTADO || 'Estado';
-            l.bindTooltip(nome);
-          }
-        }).addTo(map);
-      });
-  }
-}, 2000);
-</script>
-</body>
-</html>
+// Adicionar um marcador de texto ao longo da linha
+const tordesilhasLabel = L.marker([-16, -46], {
+  icon: L.divIcon({
+    className: 'tordesilhas-label',
+    html: '<div style="background:#0f0c06;color:#b8860b;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:11px;border:1px solid #b8860b;white-space:nowrap;">⚖️ Linha de Tordesilhas<br><span style="font-size:9px;">Meridiano ~46°
