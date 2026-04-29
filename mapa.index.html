@@ -376,4 +376,39 @@ const tordesilhasLine = L.polyline(tordesilhasPoints, {
 const tordesilhasLabel = L.marker([-16, -46], {
   icon: L.divIcon({
     className: 'tordesilhas-label',
-    html: '<div style="background:#0f0c06;color:#b8860b;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:11px;border:1px solid #b8860b;white-space:nowrap;">⚖️ Linha de Tordesilhas<br><span style="font-size:9px;">Meridiano ~46°
+    html: '<div style="background:#0f0c06;color:#b8860b;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:11px;border:1px solid #b8860b;white-space:nowrap;">⚖️ Linha de Tordesilhas<br><span style="font-size:9px;">Meridiano ~46° W</span></div>',
+    iconSize: [140, 40],
+    iconAnchor: [70, 20]
+  })
+}).addTo(map);
+
+tordesilhasLabel.setOpacity(0);
+
+let tordesilhasOn = false;
+document.getElementById('tordBtn').addEventListener('click', () => {
+  tordesilhasOn = !tordesilhasOn;
+  tordesilhasLine.setStyle({ opacity: tordesilhasOn ? 1 : 0 });
+  tordesilhasLabel.setOpacity(tordesilhasOn ? 1 : 0);
+  document.getElementById('tordBtn').classList.toggle('active', tordesilhasOn);
+});
+
+// Adicionar tooltip personalizado
+const customTooltipStyle = document.createElement('style');
+customTooltipStyle.textContent = `
+  .leaflet-tooltip.custom-tooltip {
+    background: #0f0c06;
+    border: 1px solid #b8860b;
+    color: #f5f0e8;
+    font-family: monospace;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .leaflet-tooltip.custom-tooltip:before {
+    border-top-color: #0f0c06;
+  }
+`;
+document.head.appendChild(customTooltipStyle);
+</script>
+</body>
+</html>
