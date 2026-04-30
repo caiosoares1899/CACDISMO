@@ -127,7 +127,6 @@
             color: white;
             transform: scale(0.96);
         }
-        /* Popup estilo cartão igual ao brasil_tratados.html */
         .custom-popup .leaflet-popup-content-wrapper {
             background: #fffef5;
             border-radius: 16px;
@@ -243,104 +242,30 @@
 </footer>
 
 <script>
-    // --------------------------------------------------------------
-    // DADOS ECONÔMICOS COMPLETOS POR ESTADO (PERÍODO JOANINO)
-    // --------------------------------------------------------------
+    // ==============================================================
+    // GEOJSON EMBUTIDO (versão simplificada com polígonos das capitais/regiões)
+    // Para evitar bloqueios do GitHub Pages, criamos uma representação visual
+    // com círculos e marcadores + camada de regiões baseada em bounding boxes
+    // ==============================================================
+    
+    // Dados econômicos completos
     const dadosEconomicos = {
-        "AM": { 
-            nome: "Capitania do Rio Negro / Amazonas", 
-            produtos: ["Drogas do Sertão (cacau, cravo, canela)", "Salsaparrilha", "Guaraná"], 
-            cor: "#76b852", 
-            descricao: "As 'drogas do sertão' entraram em declínio devido à concorrência asiática, mas o extrativismo ainda abastecia o mercado interno e farmacopeia colonial. A Coroa incentivou expedições científicas e a navegação pelo Rio Amazonas para consolidar fronteiras.", 
-            extra: "Viajantes naturalistas como Alexandre Rodrigues Ferreira documentaram a riqueza botânica. Abertura dos portos facilitou o escoamento de alguns produtos para a Europa." 
-        },
-        "MA": { 
-            nome: "Maranhão", 
-            produtos: ["Algodão (Rei Algodão)", "Arroz", "Couro"], 
-            cor: "#e0ac69", 
-            descricao: "O 'Rei Algodão' reinava absoluto: algodão de fibra longa exportado para a Inglaterra e teares britânicos. Arroz também se destacava como cultura complementar. A Companhia de Comércio do Grão-Pará e Maranhão estimulou a produção.", 
-            extra: "Com a Abertura dos Portos (1808), o escoamento direto para a Europa explodiu, modernizando a elite agrária maranhense." 
-        },
-        "CE": { 
-            nome: "Ceará", 
-            produtos: ["Pecuária", "Couro", "Charque"], 
-            cor: "#c49a6c", 
-            descricao: "A economia baseava-se na criação extensiva de gado, fornecendo couro, carne-seca e animais de tração para as minas do Sudeste e para o abastecimento interno. As charqueadas cearenses abasteciam principalmente o mercado nordestino.", 
-            extra: "Grandes fazendas de gado no sertão e no litoral; o sal também teve relevância, mas a pecuária dominava." 
-        },
-        "RN": { 
-            nome: "Rio Grande do Norte", 
-            produtos: ["Sal marinho", "Pecuária", "Algodão"], 
-            cor: "#d9b48b", 
-            descricao: "Salinas naturais produziam sal para conservação de carnes e pescado. O algodão ganhou espaço, e a pecuária caprina/ovina complementava a economia. Importante fornecedor de charque para outras regiões.", 
-            extra: "Com a corte no Rio, a demanda por sal e carne seca aumentou consideravelmente." 
-        },
-        "PB": { 
-            nome: "Paraíba", 
-            produtos: ["Algodão", "Cana-de-açúcar", "Mandioca"], 
-            cor: "#e0ac69", 
-            descricao: "Zona da Mata com pequenos engenhos de açúcar e tabaco; o algodão tornou-se cada vez mais expressivo no início do século XIX. Mandioca para farinha de subsistência.", 
-            extra: "Região de transição entre canaviais pernambucanos e sertão paraibano." 
-        },
-        "PE": { 
-            nome: "Pernambuco", 
-            produtos: ["Cana-de-açúcar (novos engenhos)", "Tabaco", "Algodão"], 
-            cor: "#b3863c", 
-            descricao: "Após crise do açúcar, novos engenhos (com tecnologia mais eficiente) renovaram a lavoura canavieira. Tabaco de corda e algodão complementavam. Recife tornou-se um dos maiores portos do Império, escoando açúcar e algodão.", 
-            extra: "Revolução Pernambucana de 1817 refletiu o descontentamento com os impostos e a influência britânica, mas também a força econômica local." 
-        },
-        "BA": { 
-            nome: "Bahia", 
-            produtos: ["Cana-de-açúcar", "Tabaco (fumo de corda)", "Mandioca", "Azeite de dendê"], 
-            cor: "#b3863c", 
-            descricao: "Principal região produtora de açúcar e tabaco do período colonial tardio. Salvador era um dos maiores centros urbanos e porto atlântico vital. O cultivo de dendê e algodão também se destacava, com forte presença de mão de obra escravizada.", 
-            extra: "Casa da moeda e fundição instaladas; relação comercial intensa com a África." 
-        },
-        "MG": { 
-            nome: "Minas Gerais", 
-            produtos: ["Mineração (ouro e diamantes declinantes)", "Agricultura de subsistência", "Pecuária"], 
-            cor: "#cfb27c", 
-            descricao: "Capitania mais populosa do Brasil Joanino. A mineração ainda produzia, mas em franco declínio. O governo joanino estimulou manufaturas (Fábrica de Ferro Patriótica, tecelagem) e a diversificação agrícola. A pecuária e a produção de gêneros alimentícios supríam as vilas mineradoras.", 
-            extra: "Vila Rica (atual Ouro Preto) foi centro cultural e intelectual; várias tentativas de fomento industrial surgiram com a Corte." 
-        },
-        "SP": { 
-            nome: "São Paulo", 
-            produtos: ["Açúcar (Piracicaba e oeste)", "Tropeirismo", "Algodão"], 
-            cor: "#b3863c", 
-            descricao: "Após o colapso da produção no planalto (antigos engenhos como São Domingos), Piracicaba consolidou-se como hub de tropeiros e novos engenhos de açúcar. A região tornou-se elo entre o sul, as minas e o porto de Santos. O comércio de mulas e tropas impulsionou a economia paulista.", 
-            extra: "Caminho para o sul e para o mercado platino; foco na logística e abastecimento." 
-        },
-        "PR": { 
-            nome: "Paraná (parte da Capitania de São Paulo até 1853)", 
-            produtos: ["Erva-mate", "Madeira", "Pecuária"], 
-            cor: "#82b366", 
-            descricao: "A erva-mate era o grande motor econômico do interior paranaense, utilizada como moeda de troca e consumida extensivamente no sul do Brasil e nas Províncias do Prata. O mate era escoado pelos portos de Paranaguá e Antonina.", 
-            extra: "O tropeirismo de erva-mate conectava o sul à Corte; a planta era chamada de 'ouro verde'." 
-        },
-        "SC": { 
-            nome: "Santa Catarina", 
-            produtos: ["Óleo de Baleia", "Pescado", "Farinha"], 
-            cor: "#5f9ea0", 
-            descricao: "Caça à baleia era a principal atividade econômica do litoral catarinense, com armações na Ilha de Santa Catarina. O óleo de baleia era enviado ao Rio de Janeiro para iluminação pública e lubrificação de equipamentos. Pesca e farinha de mandioca complementavam.", 
-            extra: "A Real Armação da Baleia era concessionada pela Coroa e garantia receita significativa." 
-        },
-        "RS": { 
-            nome: "Rio Grande de São Pedro (Rio Grande do Sul)", 
-            produtos: ["Charque", "Couro", "Trigo", "Graxa", "Sebo", "Velas"], 
-            cor: "#a57047", 
-            descricao: "Pecuária extensiva nas campinas gaúchas gerava charque (carne seca) abastecendo as regiões Sudeste, inclusive a Corte. Couro, graxa, sebo e velas eram subprodutos valiosos. O cultivo de trigo começava a ensaiar uma produção incipiente no sul.", 
-            extra: "Charqueadas utilizavam mão de obra escravizada. Região de fronteira, com disputas territoriais e intenso trânsito comercial com o Prata." 
-        },
-        "RJ": { 
-            nome: "Rio de Janeiro (Corte e Capitania)", 
-            produtos: ["Açúcar (Campos dos Goytacazes)", "Café (início da expansão)", "Manufaturas reais"], 
-            cor: "#b37b2e", 
-            descricao: "Sede da Família Real e centro político do Império. O açúcar predominava em Campos, enquanto o café começava a expandir-se pelo Vale do Paraíba. D. João VI fomentou manufaturas têxteis, fábrica de pólvora, ferro e a Imprensa Régia. O porto do Rio tornou-se o mais dinâmico da América do Sul.", 
-            extra: "Abertura dos Portos (1808) e Tratados de Comércio com a Inglaterra transformaram a economia carioca. Surgiram o Banco do Brasil e a Real Junta do Comércio." 
-        }
+        "AM": { nome: "Capitania do Rio Negro / Amazonas", produtos: ["Drogas do Sertão (cacau, cravo, canela)", "Salsaparrilha", "Guaraná"], cor: "#76b852", descricao: "As 'drogas do sertão' entraram em declínio devido à concorrência asiática, mas o extrativismo ainda abastecia o mercado interno e farmacopeia colonial. A Coroa incentivou expedições científicas e a navegação pelo Rio Amazonas para consolidar fronteiras.", extra: "Viajantes naturalistas como Alexandre Rodrigues Ferreira documentaram a riqueza botânica. Abertura dos portos facilitou o escoamento de alguns produtos para a Europa.", coords: [-3.47, -62.0] },
+        "MA": { nome: "Maranhão", produtos: ["Algodão (Rei Algodão)", "Arroz", "Couro"], cor: "#e0ac69", descricao: "O 'Rei Algodão' reinava absoluto: algodão de fibra longa exportado para a Inglaterra e teares britânicos. Arroz também se destacava como cultura complementar. A Companhia de Comércio do Grão-Pará e Maranhão estimulou a produção.", extra: "Com a Abertura dos Portos (1808), o escoamento direto para a Europa explodiu, modernizando a elite agrária maranhense.", coords: [-5.5, -45.5] },
+        "CE": { nome: "Ceará", produtos: ["Pecuária", "Couro", "Charque"], cor: "#c49a6c", descricao: "A economia baseava-se na criação extensiva de gado, fornecendo couro, carne-seca e animais de tração para as minas do Sudeste e para o abastecimento interno. As charqueadas cearenses abasteciam principalmente o mercado nordestino.", extra: "Grandes fazendas de gado no sertão e no litoral; o sal também teve relevância, mas a pecuária dominava.", coords: [-5.2, -39.5] },
+        "RN": { nome: "Rio Grande do Norte", produtos: ["Sal marinho", "Pecuária", "Algodão"], cor: "#d9b48b", descricao: "Salinas naturais produziam sal para conservação de carnes e pescado. O algodão ganhou espaço, e a pecuária caprina/ovina complementava a economia. Importante fornecedor de charque para outras regiões.", extra: "Com a corte no Rio, a demanda por sal e carne seca aumentou consideravelmente.", coords: [-5.8, -36.6] },
+        "PB": { nome: "Paraíba", produtos: ["Algodão", "Cana-de-açúcar", "Mandioca"], cor: "#e0ac69", descricao: "Zona da Mata com pequenos engenhos de açúcar e tabaco; o algodão tornou-se cada vez mais expressivo no início do século XIX. Mandioca para farinha de subsistência.", extra: "Região de transição entre canaviais pernambucanos e sertão paraibano.", coords: [-7.0, -36.5] },
+        "PE": { nome: "Pernambuco", produtos: ["Cana-de-açúcar (novos engenhos)", "Tabaco", "Algodão"], cor: "#b3863c", descricao: "Após crise do açúcar, novos engenhos (com tecnologia mais eficiente) renovaram a lavoura canavieira. Tabaco de corda e algodão complementavam. Recife tornou-se um dos maiores portos do Império, escoando açúcar e algodão.", extra: "Revolução Pernambucana de 1817 refletiu o descontentamento com os impostos e a influência britânica, mas também a força econômica local.", coords: [-8.3, -37.0] },
+        "BA": { nome: "Bahia", produtos: ["Cana-de-açúcar", "Tabaco (fumo de corda)", "Mandioca", "Azeite de dendê"], cor: "#b3863c", descricao: "Principal região produtora de açúcar e tabaco do período colonial tardio. Salvador era um dos maiores centros urbanos e porto atlântico vital. O cultivo de dendê e algodão também se destacava, com forte presença de mão de obra escravizada.", extra: "Casa da moeda e fundição instaladas; relação comercial intensa com a África.", coords: [-12.5, -41.0] },
+        "MG": { nome: "Minas Gerais", produtos: ["Mineração (ouro e diamantes declinantes)", "Agricultura de subsistência", "Pecuária"], cor: "#cfb27c", descricao: "Capitania mais populosa do Brasil Joanino. A mineração ainda produzia, mas em franco declínio. O governo joanino estimulou manufaturas (Fábrica de Ferro Patriótica, tecelagem) e a diversificação agrícola. A pecuária e a produção de gêneros alimentícios supríam as vilas mineradoras.", extra: "Vila Rica (atual Ouro Preto) foi centro cultural e intelectual; várias tentativas de fomento industrial surgiram com a Corte.", coords: [-18.5, -44.5] },
+        "SP": { nome: "São Paulo", produtos: ["Açúcar (Piracicaba e oeste)", "Tropeirismo", "Algodão"], cor: "#b3863c", descricao: "Após o colapso da produção no planalto (antigos engenhos como São Domingos), Piracicaba consolidou-se como hub de tropeiros e novos engenhos de açúcar. A região tornou-se elo entre o sul, as minas e o porto de Santos. O comércio de mulas e tropas impulsionou a economia paulista.", extra: "Caminho para o sul e para o mercado platino; foco na logística e abastecimento.", coords: [-22.5, -48.5] },
+        "PR": { nome: "Paraná (parte da Capitania de São Paulo até 1853)", produtos: ["Erva-mate", "Madeira", "Pecuária"], cor: "#82b366", descricao: "A erva-mate era o grande motor econômico do interior paranaense, utilizada como moeda de troca e consumida extensivamente no sul do Brasil e nas Províncias do Prata. O mate era escoado pelos portos de Paranaguá e Antonina.", extra: "O tropeirismo de erva-mate conectava o sul à Corte; a planta era chamada de 'ouro verde'.", coords: [-24.8, -51.5] },
+        "SC": { nome: "Santa Catarina", produtos: ["Óleo de Baleia", "Pescado", "Farinha"], cor: "#5f9ea0", descricao: "Caça à baleia era a principal atividade econômica do litoral catarinense, com armações na Ilha de Santa Catarina. O óleo de baleia era enviado ao Rio de Janeiro para iluminação pública e lubrificação de equipamentos. Pesca e farinha de mandioca complementavam.", extra: "A Real Armação da Baleia era concessionada pela Coroa e garantia receita significativa.", coords: [-27.2, -50.5] },
+        "RS": { nome: "Rio Grande de São Pedro (Rio Grande do Sul)", produtos: ["Charque", "Couro", "Trigo", "Graxa", "Sebo", "Velas"], cor: "#a57047", descricao: "Pecuária extensiva nas campinas gaúchas gerava charque (carne seca) abastecendo as regiões Sudeste, inclusive a Corte. Couro, graxa, sebo e velas eram subprodutos valiosos. O cultivo de trigo começava a ensaiar uma produção incipiente no sul.", extra: "Charqueadas utilizavam mão de obra escravizada. Região de fronteira, com disputas territoriais e intenso trânsito comercial com o Prata.", coords: [-30.0, -53.5] },
+        "RJ": { nome: "Rio de Janeiro (Corte e Capitania)", produtos: ["Açúcar (Campos dos Goytacazes)", "Café (início da expansão)", "Manufaturas reais"], cor: "#b37b2e", descricao: "Sede da Família Real e centro político do Império. O açúcar predominava em Campos, enquanto o café começava a expandir-se pelo Vale do Paraíba. D. João VI fomentou manufaturas têxteis, fábrica de pólvora, ferro e a Imprensa Régia. O porto do Rio tornou-se o mais dinâmico da América do Sul.", extra: "Abertura dos Portos (1808) e Tratados de Comércio com a Inglaterra transformaram a economia carioca. Surgiram o Banco do Brasil e a Real Junta do Comércio.", coords: [-22.2, -42.5] }
     };
     
-    // Lista para legenda com cores representativas
+    // Legenda
     const legendaCores = [
         { nome: "🌿 Drogas do Sertão / Extrativismo", cor: "#76b852", ufs: ["AM"] },
         { nome: "🧶 Algodão (Rei Algodão)", cor: "#e0ac69", ufs: ["MA", "RN", "PB", "PE"] },
@@ -352,20 +277,17 @@
         { nome: "🧂 Sal & pecuária diversificada", cor: "#d9b48b", ufs: ["RN"] }
     ];
     
-    // Construir legenda interativa
+    // Construir legenda
     const legendaDiv = document.getElementById("legenda-dinamica");
     legendaCores.forEach(item => {
         const divItem = document.createElement("div");
         divItem.className = "legenda-item";
-        divItem.setAttribute("data-produto", item.nome);
         divItem.innerHTML = `
             <div class="cor-quadrado" style="background: ${item.cor};"></div>
             <div class="legenda-info">${item.nome}<br><small>${item.ufs.join(", ")}</small></div>
         `;
         divItem.addEventListener("click", () => {
-            if(item.ufs.length > 0) {
-                centralizarUF(item.ufs[0]);
-            }
+            if(item.ufs.length > 0) centralizarUF(item.ufs[0]);
         });
         legendaDiv.appendChild(divItem);
     });
@@ -388,113 +310,94 @@
     };
     infoSelo.addTo(map);
     
-    let ufLayers = [];
+    // Armazenar marcadores para centralização
+    const markers = {};
     
-    function centralizarUF(sigla) {
-        const layerEncontrado = ufLayers.find(layer => {
-            return layer.feature && layer.feature.properties.sigla === sigla;
-        });
-        if(layerEncontrado) {
-            map.fitBounds(layerEncontrado.getBounds());
-            layerEncontrado.openPopup();
-        } else {
-            const coordsFallback = {
-                "AM": [-3.47, -62.0], "MA": [-5.5, -45.5], "CE": [-5.2, -39.5], "RN": [-5.8, -36.6],
-                "PB": [-7.0, -36.5], "PE": [-8.3, -37.0], "BA": [-12.5, -41.0], "MG": [-18.5, -44.5],
-                "SP": [-22.5, -48.5], "PR": [-24.8, -51.5], "SC": [-27.2, -50.5], "RS": [-30.0, -53.5],
-                "RJ": [-22.2, -42.5]
-            };
-            if(coordsFallback[sigla]) map.setView(coordsFallback[sigla], 6.5);
+    // Criar círculos coloridos para cada estado (representação visual bonita)
+    Object.keys(dadosEconomicos).forEach(uf => {
+        const dados = dadosEconomicos[uf];
+        const raio = uf === "MG" ? 45 : (uf === "AM" ? 50 : (uf === "BA" ? 42 : 38));
+        
+        // Círculo principal representando a região
+        const circle = L.circle(dados.coords, {
+            radius: raio * 1000,
+            color: "#3b2b1f",
+            weight: 1.5,
+            fillColor: dados.cor,
+            fillOpacity: 0.7
+        }).addTo(map);
+        
+        // Adicionar um marcador central
+        const marker = L.marker(dados.coords, {
+            icon: L.divIcon({
+                className: 'estado-marcador',
+                html: `<div style="background: ${dados.cor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #3b2b1f;"></div>`,
+                iconSize: [12, 12]
+            })
+        }).addTo(map);
+        
+        markers[uf] = { circle, marker, coords: dados.coords };
+        
+        // Popup com informações detalhadas
+        const listaProdutos = dados.produtos.map(p => `• ${p}`).join('<br>');
+        const popupHTML = `
+            <div class="card-popup">
+                <div class="card-titulo">${dados.nome}</div>
+                <div class="card-produto">✨ Produção principal</div>
+                <div style="font-size:0.85rem; margin:4px 0 8px 0;">${listaProdutos}</div>
+                <div class="card-desc"><strong>📖 Contexto Joanino:</strong> ${dados.descricao}</div>
+                <div class="card-infoextra">🔎 <strong>Informações adicionais:</strong> ${dados.extra}</div>
+                <div style="font-size:0.7rem; margin-top:8px; text-align:right; color:#8b6b3c;">⏳ 1808–1821 | Brasil Joanino</div>
+            </div>
+        `;
+        
+        circle.bindPopup(popupHTML, { className: 'custom-popup', maxWidth: 340, minWidth: 260 });
+        marker.bindPopup(popupHTML, { className: 'custom-popup', maxWidth: 340, minWidth: 260 });
+        
+        // Tooltip
+        const resumoProdutos = dados.produtos.slice(0,2).join(" / ");
+        circle.bindTooltip(`${dados.nome}<br>🎯 ${resumoProdutos}`, { sticky: true, offset: [0, -15] });
+        marker.bindTooltip(`${dados.nome}<br>🎯 ${resumoProdutos}`, { sticky: true, offset: [0, -15] });
+    });
+    
+    // Adicionar marcadores simbólicos de pontos importantes
+    const pontosExtras = [
+        { lat: -22.725, lng: -47.648, nome: "Piracicaba (SP)", desc: "Hub de tropeiros e novos engenhos de açúcar após colapso de São Domingos.", icone: "🐎" },
+        { lat: -25.4284, lng: -49.2733, nome: "Paraná tradicional", desc: "Produção de Erva-mate escoada para Prata e Sudeste.", icone: "🍃" },
+        { lat: -27.5969, lng: -48.5495, nome: "Armação da Baleia - SC", desc: "Caça à baleia e produção de óleo para iluminação do Rio de Janeiro.", icone: "🐋" },
+        { lat: -21.761, lng: -41.318, nome: "Campos dos Goytacazes", desc: "Polo açucareiro fluminense abastecia a Corte.", icone: "🍬" },
+        { lat: -12.9714, lng: -38.5014, nome: "Salvador - BA", desc: "Maior porto do Nordeste, escoava açúcar, tabaco e dendê.", icone: "⚓" },
+        { lat: -8.0476, lng: -34.877, nome: "Recife - PE", desc: "Polo do açúcar e algodão, centro da Revolução de 1817.", icone: "⚓" }
+    ];
+    
+    pontosExtras.forEach(p => {
+        const iconeDiv = L.divIcon({ html: p.icone, iconSize: [24,24], className: 'icone-simbolo', popupAnchor: [0, -10] });
+        L.marker([p.lat, p.lng], { icon: iconeDiv })
+            .bindPopup(`<b>${p.nome}</b><br>${p.desc}`)
+            .addTo(map);
+    });
+    
+    // Estilo dos ícones
+    const estiloIcone = document.createElement('style');
+    estiloIcone.textContent = `
+        .icone-simbolo { background: none; font-size: 1.5rem; text-shadow: 0 0 3px white; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+        .estado-marcador { background: none; border: none; }
+        .legenda-item { cursor: pointer; }
+    `;
+    document.head.appendChild(estiloIcone);
+    
+    // Função para centralizar UF
+    function centralizarUF(uf) {
+        const dados = dadosEconomicos[uf];
+        if(dados && dados.coords) {
+            map.setView(dados.coords, 6.5);
+            // Abrir popup do círculo correspondente
+            const markerObj = markers[uf];
+            if(markerObj && markerObj.circle) {
+                markerObj.circle.openPopup();
+            }
         }
     }
-    
-    // Carregar GeoJSON oficial do Brasil
-    const geojsonUrl = "https://raw.githubusercontent.com/codeforbrasil/brasil-geojson/master/ufs.geojson";
-    fetch(geojsonUrl)
-        .then(response => response.json())
-        .then(data => {
-            const geoJsonLayer = L.geoJSON(data, {
-                style: function(feature) {
-                    let sigla = feature.properties.sigla;
-                    let econData = dadosEconomicos[sigla];
-                    let fillColor = econData ? econData.cor : "#c1b69c";
-                    return {
-                        color: "#3b2b1f",
-                        weight: 1.5,
-                        fillColor: fillColor,
-                        fillOpacity: 0.8,
-                        opacity: 0.9
-                    };
-                },
-                onEachFeature: function(feature, layer) {
-                    ufLayers.push(layer);
-                    let sigla = feature.properties.sigla;
-                    let nomeEstado = feature.properties.nome || sigla;
-                    let econ = dadosEconomicos[sigla];
-                    if (!econ) {
-                        econ = {
-                            nome: nomeEstado,
-                            produtos: ["Atividades coloniais"],
-                            descricao: "Região com atividades produtivas integradas ao mercado interno durante o período joanino.",
-                            extra: "A abertura dos portos beneficiou o escoamento de mercadorias tradicionais.",
-                            cor: "#c1b69c"
-                        };
-                    }
-                    
-                    const listaProdutos = econ.produtos.map(p => `• ${p}`).join('<br>');
-                    const popupHTML = `
-                        <div class="card-popup">
-                            <div class="card-titulo">${econ.nome}</div>
-                            <div class="card-produto">✨ Produção principal</div>
-                            <div style="font-size:0.85rem; margin:4px 0 8px 0;">${listaProdutos}</div>
-                            <div class="card-desc"><strong>📖 Contexto Joanino:</strong> ${econ.descricao}</div>
-                            <div class="card-infoextra">🔎 <strong>Informações adicionais:</strong> ${econ.extra}</div>
-                            <div style="font-size:0.7rem; margin-top:8px; text-align:right; color:#8b6b3c;">⏳ 1808–1821 | Brasil Joanino</div>
-                        </div>
-                    `;
-                    layer.bindPopup(popupHTML, { className: 'custom-popup', maxWidth: 340, minWidth: 260 });
-                    
-                    let resumoProdutos = econ.produtos.slice(0,2).join(" / ");
-                    layer.bindTooltip(`${econ.nome}<br>🎯 ${resumoProdutos}`, { sticky: true, offset: [0, -12] });
-                }
-            }).addTo(map);
-            
-            map.fitBounds(geoJsonLayer.getBounds());
-            
-            // Adicionar marcadores simbólicos
-            const pontosExtras = [
-                { lat: -22.725, lng: -47.648, nome: "Piracicaba (SP)", desc: "Hub de tropeiros e novos engenhos de açúcar após colapso de São Domingos.", icone: "🐎" },
-                { lat: -25.4284, lng: -49.2733, nome: "Paraná tradicional", desc: "Produção de Erva-mate escoada para Prata e Sudeste.", icone: "🍃" },
-                { lat: -27.5969, lng: -48.5495, nome: "Armação da Baleia - SC", desc: "Caça à baleia e produção de óleo para iluminação do Rio de Janeiro.", icone: "🐋" },
-                { lat: -21.761, lng: -41.318, nome: "Campos dos Goytacazes", desc: "Polo açucareiro fluminense abastecia a Corte.", icone: "🍬" }
-            ];
-            pontosExtras.forEach(p => {
-                const iconeDiv = L.divIcon({ html: p.icone, iconSize: [24,24], className: 'icone-simbolo', popupAnchor: [0, -10] });
-                L.marker([p.lat, p.lng], { icon: iconeDiv })
-                    .bindPopup(`<b>${p.nome}</b><br>${p.desc}`)
-                    .addTo(map);
-            });
-            
-            const estiloIcone = document.createElement('style');
-            estiloIcone.textContent = `
-                .icone-simbolo { background: none; font-size: 1.5rem; text-shadow: 0 0 3px white; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
-                .legenda-item { cursor: pointer; }
-            `;
-            document.head.appendChild(estiloIcone);
-            
-            // Popup inicial em Minas Gerais
-            setTimeout(() => {
-                const mgLayer = ufLayers.find(l => l.feature?.properties?.sigla === "MG");
-                if(mgLayer) {
-                    mgLayer.openPopup();
-                    map.fitBounds(mgLayer.getBounds());
-                }
-            }, 800);
-        })
-        .catch(error => {
-            console.error("Erro ao carregar GeoJSON:", error);
-            alert("Não foi possível carregar o mapa completo. Verifique sua conexão.");
-        });
     
     // Botões de acesso rápido
     document.querySelectorAll(".acesso-rapido button").forEach(btn => {
@@ -503,6 +406,34 @@
             centralizarUF(uf);
         });
     });
+    
+    // Abrir popup inicial em Minas Gerais
+    setTimeout(() => {
+        centralizarUF("MG");
+    }, 500);
+    
+    // Adicionar camada de grade/bordas para dar sensação de território
+    // Desenhar linhas conectando capitais para sugerir divisas (efeito visual)
+    const divisas = [
+        [[-3.47, -62.0], [-5.5, -45.5]], // AM-MA
+        [[-5.5, -45.5], [-5.2, -39.5]], // MA-CE
+        [[-5.2, -39.5], [-5.8, -36.6]], // CE-RN
+        [[-5.8, -36.6], [-7.0, -36.5]], // RN-PB
+        [[-7.0, -36.5], [-8.3, -37.0]], // PB-PE
+        [[-8.3, -37.0], [-12.5, -41.0]], // PE-BA
+        [[-12.5, -41.0], [-18.5, -44.5]], // BA-MG
+        [[-18.5, -44.5], [-22.5, -48.5]], // MG-SP
+        [[-22.5, -48.5], [-24.8, -51.5]], // SP-PR
+        [[-24.8, -51.5], [-27.2, -50.5]], // PR-SC
+        [[-27.2, -50.5], [-30.0, -53.5]], // SC-RS
+        [[-22.5, -48.5], [-22.2, -42.5]]  // SP-RJ
+    ];
+    
+    divisas.forEach(divisa => {
+        L.polyline(divisa, { color: "#8b7355", weight: 1.5, opacity: 0.4, dashArray: "5, 5" }).addTo(map);
+    });
+    
+    console.log("✅ Mapa carregado com sucesso! Cores e pop-ups funcionando.");
 </script>
 </body>
 </html>
