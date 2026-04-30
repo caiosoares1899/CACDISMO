@@ -15,11 +15,13 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{height:100vh;display:flex;flex-direction:column;font-family:'IBM Plex Sans',sans-serif;font-weight:300;color:var(--text);background:var(--bg);overflow:hidden}
 .header{flex-shrink:0;padding:11px 22px 9px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-left .flag{font-size:24px}
 .header-left .tag{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.25em;color:var(--gold);text-transform:uppercase}
-.header-left h1{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);margin-top:1px}
-.filters{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.filter-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
-.produto-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.header-left h1{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--cream);margin-top:2px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;max-width:70%}
+.filter-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-right:2px}
+.produto-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:2px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
 .produto-btn.active{background:rgba(201,168,76,.12);border-color:var(--gold);color:var(--gold)}
 .main{flex:1;display:flex;min-height:0}
 #map{flex:1;background:#0d1520!important}
@@ -27,44 +29,47 @@ body{height:100vh;display:flex;flex-direction:column;font-family:'IBM Plex Sans'
 .leaflet-control-zoom a{background:var(--surface)!important;color:var(--gold)!important;border-color:var(--border)!important}
 .leaflet-control-attribution{display:none!important}
 .sidebar{width:280px;flex-shrink:0;background:var(--surface2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.sidebar-head{padding:9px 14px;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);flex-shrink:0}
+.sidebar-head{padding:12px 14px;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);flex-shrink:0}
 .sidebar-count{font-size:9px;color:var(--muted);float:right}
 .sidebar-list{overflow-y:auto;flex:1}
-.si{padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;display:flex;align-items:flex-start;gap:8px}
-.si:hover{background:rgba(201,168,76,.05)}
-.si-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.si-name{font-size:11.5px;color:var(--cream);font-weight:500}
-.si-sub{font-size:9px;color:var(--muted);margin-top:2px}
+.si{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;display:flex;align-items:flex-start;gap:10px}
+.si:hover{background:rgba(201,168,76,.08)}
+.si-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.si-name{font-size:12px;color:var(--cream);font-weight:500}
+.si-sub{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.4}
 .overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
-.popup{background:var(--surface);border:1px solid var(--border);border-radius:4px;width:100%;max-width:750px;max-height:90vh;overflow-y:auto;position:relative;animation:popIn .18s ease}
+.popup{background:var(--surface);border:1px solid var(--border);border-radius:6px;width:100%;max-width:750px;max-height:90vh;overflow-y:auto;position:relative;animation:popIn .18s ease}
 @keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 .popup-close{position:absolute;top:15px;right:18px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;line-height:1;z-index:2}
 .popup-close:hover{color:var(--cream)}
-.popup-top{padding:20px 50px 16px 22px;border-bottom:1px solid var(--border)}
-.p-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:3px 9px;border-radius:2px;display:inline-block;margin-bottom:12px}
+.popup-top{padding:20px 50px 16px 24px;border-bottom:1px solid var(--border)}
+.p-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:3px 10px;border-radius:2px;display:inline-block;margin-bottom:12px}
 .p-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--cream);margin-bottom:8px}
-.p-meta{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted);display:flex;gap:18px}
+.p-meta{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--muted);display:flex;gap:20px}
 .p-meta span{color:var(--gold-light)}
-.popup-grid{padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.pbox{border:1px solid var(--border);border-radius:4px;padding:14px 16px;background:rgba(255,255,255,.02)}
+.popup-grid{padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pbox{border:1px solid var(--border);border-radius:6px;padding:16px 18px;background:rgba(255,255,255,.02)}
 .pbox.full{grid-column:1/-1}
-.pbox h3{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-.pbox p{font-size:14px;line-height:1.6;color:var(--text)}
+.pbox h3{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.pbox p{font-size:14px;line-height:1.65;color:var(--text)}
 .produto-list{list-style:none;padding:0;margin:0}
-.produto-list li{font-size:14px;color:var(--gold-light);margin-bottom:6px;line-height:1.5}
-.footer-note{position:fixed;bottom:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--muted);background:rgba(10,9,6,.8);padding:6px 12px;border-radius:16px;z-index:1000;pointer-events:none;max-width:380px;line-height:1.4;border-left:2px solid var(--gold);backdrop-filter:blur(4px)}
-.port-marker{background:rgba(0,0,0,0.5);border-radius:50%;padding:4px;transition:transform 0.1s}
+.produto-list li{font-size:14px;color:var(--gold-light);margin-bottom:8px;line-height:1.5}
+.footer-note{position:fixed;bottom:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--muted);background:rgba(10,9,6,.85);padding:8px 14px;border-radius:20px;z-index:1000;pointer-events:none;max-width:400px;line-height:1.45;border-left:3px solid var(--gold);backdrop-filter:blur(5px)}
+.port-marker{transition:transform 0.1s;background:rgba(0,0,0,0.4);border-radius:50%;padding:2px}
 .port-marker:hover{transform:scale(1.1)}
-@media(max-width:700px){.sidebar{display:none}.popup-grid{grid-template-columns:1fr}.footer-note{font-size:7px;max-width:280px;bottom:8px;left:8px}}
+@media(max-width:700px){.sidebar{display:none}.popup-grid{grid-template-columns:1fr}.footer-note{font-size:7px;max-width:260px;bottom:8px;left:8px}.filters{max-width:100%;margin-top:8px}}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-left">
-    <div class="tag">CACD · História do Brasil · Período Joanino</div>
-    <h1>🇧🇷 Brasil Joanino — Economia & Produção (1808–1821)</h1>
+    <span class="flag">🇧🇷</span>
+    <div>
+      <div class="tag">CACD · História do Brasil · Período Joanino</div>
+      <h1>Brasil Joanino — Economia & Produção (1808–1821)</h1>
+    </div>
   </div>
   <div class="filters">
     <span class="filter-label">Filtrar:</span>
@@ -76,6 +81,7 @@ body{height:100vh;display:flex;flex-direction:column;font-family:'IBM Plex Sans'
     <button class="produto-btn" id="btn-extrativo" style="color:#76b852;border-color:#76b85255">🌿 Extrativismo</button>
     <button class="produto-btn" id="btn-mate" style="color:#82b366;border-color:#82b36655">🧉 Erva-mate</button>
     <button class="produto-btn" id="btn-baleia" style="color:#5f9ea0;border-color:#5f9ea055">🐋 Caça à Baleia</button>
+    <button class="produto-btn" id="btn-portos" style="color:#4aa3df;border-color:#4aa3df55" onclick="filterPorts()">🚢 Portos</button>
   </div>
 </div>
 
@@ -136,81 +142,18 @@ const dadosEconomicos = {
 };
 
 // ==============================================================
-// DADOS DOS PORTOS (com emoji 🚢)
+// PORTOS COM COORDENADAS NO OCEANO (mais afastados)
 // ==============================================================
 const portos = [
-    { 
-        nome: "Porto de São Luís", 
-        local: "Maranhão", 
-        coords: [-2.53, -44.30], 
-        produtos: "Algodão (Rei Algodão), Arroz, Couro",
-        descricao: "Principal porto escoador do algodão maranhense para a Inglaterra. Com a Abertura dos Portos (1808), São Luís passou a negociar diretamente com Liverpool, dinamizando a economia regional.",
-        importancia: "Centro da Companhia de Comércio do Grão-Pará e Maranhão. O porto foi modernizado no período joanino para atender à crescente demanda europeia por algodão de fibra longa."
-    },
-    { 
-        nome: "Porto do Recife", 
-        local: "Pernambuco", 
-        coords: [-8.05, -34.88], 
-        produtos: "Açúcar, Tabaco, Algodão",
-        descricao: "Um dos portos mais movimentados do Império. Escoava açúcar dos novos engenhos pernambucanos, tabaco de corda e algodão. Foi palco da Revolução Pernambucana de 1817.",
-        importancia: "Polo comercial do Nordeste. O porto conectava o Brasil ao mercado europeu e africano. A influência britânica era forte, com comerciantes ingleses estabelecidos na região."
-    },
-    { 
-        nome: "Porto de Salvador", 
-        local: "Bahia", 
-        coords: [-12.97, -38.51], 
-        produtos: "Açúcar, Tabaco (fumo de corda), Azeite de dendê",
-        descricao: "O maior e mais importante porto do Brasil colonial. Salvador era a capital do país até 1763 e manteve sua relevância comercial durante o período joanino.",
-        importancia: "Estratégico para o tráfico de escravizados com a África. O porto era a porta de entrada de africanos e o principal centro da economia açucareira baiana. A pressão inglesa pelo fim do tráfico impactou diretamente sua economia."
-    },
-    { 
-        nome: "Porto do Rio de Janeiro", 
-        local: "Rio de Janeiro (Corte)", 
-        coords: [-22.90, -43.18], 
-        produtos: "Açúcar, Café (início), Manufaturas reais",
-        descricao: "Com a transferência da Corte portuguesa em 1808, o Rio tornou-se o centro político e comercial do Império. A Abertura dos Portos revolucionou sua economia.",
-        importancia: "O porto mais dinâmico da América do Sul. Recebia navios ingleses, franceses e de outras nações. Ali funcionavam a Alfândega Real, o Banco do Brasil e a Imprensa Régia. Escolhido por D. João VI como capital do Reino Unido (1815)."
-    },
-    { 
-        nome: "Porto de Santos", 
-        local: "São Paulo", 
-        coords: [-23.96, -46.33], 
-        produtos: "Açúcar (Piracicaba), Algodão, Couro",
-        descricao: "Principal via de escoamento da produção paulista. O açúcar produzido em Piracicaba e região descia a serra para ser exportado pelo porto de Santos.",
-        importancia: "Conexão vital entre o planalto paulista e o mercado internacional. O porto cresceu no período joanino com a expansão dos engenhos de açúcar no oeste paulista e a produção de algodão."
-    },
-    { 
-        nome: "Porto de Paranaguá", 
-        local: "Paraná", 
-        coords: [-25.52, -48.51], 
-        produtos: "Erva-mate, Madeira",
-        descricao: "Principal porto escoador da erva-mate paranaense, chamada de 'ouro verde'. O mate era exportado para o Prata e para o sul do Brasil.",
-        importancia: "O porto conectava as plantações de erva-mate do interior aos mercados platinos. A região era zona de influência disputada entre Brasil e Espanha."
-    },
-    { 
-        nome: "Porto de Desterro (Florianópolis)", 
-        local: "Santa Catarina", 
-        coords: [-27.60, -48.55], 
-        produtos: "Óleo de Baleia, Pescado, Farinha",
-        descricao: "Base da Real Armação da Baleia, concessionada pela Coroa Portuguesa. O óleo de baleia era enviado ao Rio de Janeiro para iluminação pública.",
-        importancia: "Centro da caça à baleia no sul do Brasil. O porto também servia como ponto de apoio para navegação entre o Rio de Janeiro e o Prata."
-    },
-    { 
-        nome: "Porto de Rio Grande", 
-        local: "Rio Grande do Sul", 
-        coords: [-32.03, -52.10], 
-        produtos: "Charque, Couro, Trigo, Sebo, Velas",
-        descricao: "Principal porto da região sul. Escoava a produção das charqueadas gaúchas, que abasteciam o Sudeste e a Corte com carne seca e derivados.",
-        importancia: "Estratégico para o comércio com o Prata e para a defesa da fronteira sul. O porto estava no centro das disputas territoriais com a Espanha e, depois, com Argentina e Uruguai."
-    },
-    { 
-        nome: "Porto de Belém", 
-        local: "Grão-Pará", 
-        coords: [-1.45, -48.50], 
-        produtos: "Drogas do Sertão (cacau, cravo), Guaraná",
-        descricao: "Principal porto da Amazônia oriental. Escoava as 'drogas do sertão' coletadas por populações indígenas ao longo do rio Amazonas e seus afluentes.",
-        importancia: "Centro da presença portuguesa na Amazônia. O porto guarnecia a região contra cobiça internacional e organizava as expedições científicas financiadas pela Coroa."
-    }
+    { nome: "Porto de São Luís", cidade: "São Luís", estado: "MA", coords: [-2.0, -45.5], produtos: "Algodão, Arroz, Couro", descricao: "Principal porto escoador do algodão maranhense para a Inglaterra. Com a Abertura dos Portos (1808), São Luís passou a negociar diretamente com Liverpool.", importancia: "Centro da Companhia de Comércio do Grão-Pará e Maranhão. O porto foi modernizado no período joanino para atender à demanda europeia por algodão." },
+    { nome: "Porto do Recife", cidade: "Recife", estado: "PE", coords: [-7.8, -35.8], produtos: "Açúcar, Tabaco, Algodão", descricao: "Um dos portos mais movimentados do Império. Escoava açúcar dos novos engenhos pernambucanos, tabaco de corda e algodão. Foi palco da Revolução Pernambucana de 1817.", importancia: "Polo comercial do Nordeste. O porto conectava o Brasil ao mercado europeu e africano. A influência britânica era forte na região." },
+    { nome: "Porto de Salvador", cidade: "Salvador", estado: "BA", coords: [-12.0, -39.4], produtos: "Açúcar, Tabaco, Azeite de dendê", descricao: "O maior e mais importante porto do Brasil colonial. Salvador manteve sua relevância comercial durante o período joanino, apesar de não ser mais a capital.", importancia: "Estratégico para o tráfico de escravizados com a África. A pressão inglesa pelo fim do tráfico impactou diretamente sua economia." },
+    { nome: "Porto do Rio de Janeiro", cidade: "Rio de Janeiro", estado: "RJ", coords: [-22.5, -44.0], produtos: "Açúcar, Café (início), Manufaturas", descricao: "Com a transferência da Corte portuguesa em 1808, o Rio tornou-se o centro político e comercial do Império. A Abertura dos Portos revolucionou sua economia.", importancia: "O porto mais dinâmico da América do Sul. Ali funcionavam a Alfândega Real, o Banco do Brasil e a Imprensa Régia." },
+    { nome: "Porto de Santos", cidade: "Santos", estado: "SP", coords: [-23.5, -47.2], produtos: "Açúcar (Piracicaba), Algodão, Couro", descricao: "Principal via de escoamento da produção paulista. O açúcar produzido em Piracicaba descia a serra para ser exportado.", importancia: "Conexão vital entre o planalto paulista e o mercado internacional. O porto cresceu com a expansão dos engenhos de açúcar no oeste paulista." },
+    { nome: "Porto de Paranaguá", cidade: "Paranaguá", estado: "PR", coords: [-25.0, -49.5], produtos: "Erva-mate, Madeira", descricao: "Principal porto escoador da erva-mate paranaense, chamada de 'ouro verde'. O mate era exportado para o Prata.", importancia: "O porto conectava as plantações de erva-mate do interior aos mercados platinos. A região era zona de influência disputada entre Brasil e Espanha." },
+    { nome: "Porto de Desterro", cidade: "Florianópolis", estado: "SC", coords: [-27.0, -49.8], produtos: "Óleo de Baleia, Pescado", descricao: "Base da Real Armação da Baleia. O óleo de baleia era enviado ao Rio de Janeiro para iluminação pública.", importancia: "Centro da caça à baleia no sul do Brasil. O porto também servia como ponto de apoio para navegação entre o Rio de Janeiro e o Prata." },
+    { nome: "Porto de Rio Grande", cidade: "Rio Grande", estado: "RS", coords: [-31.5, -53.2], produtos: "Charque, Couro, Trigo, Sebo", descricao: "Principal porto da região sul. Escoava a produção das charqueadas gaúchas, que abasteciam o Sudeste e a Corte.", importancia: "Estratégico para o comércio com o Prata e para a defesa da fronteira sul. O porto estava no centro das disputas territoriais com a Espanha." },
+    { nome: "Porto de Belém", cidade: "Belém", estado: "PA", coords: [-0.5, -49.0], produtos: "Drogas do Sertão, Cacau", descricao: "Principal porto da Amazônia oriental. Escoava as 'drogas do sertão' coletadas ao longo do rio Amazonas.", importancia: "Centro da presença portuguesa na Amazônia. O porto guarnecia a região contra cobiça internacional." }
 ];
 
 const coordsEstados = {
@@ -222,6 +165,9 @@ const coordsEstados = {
 };
 
 let map = null;
+let stateMarkers = {};
+let portMarkers = [];
+let currentFilter = 'all';
 
 function initMap() {
     map = L.map('map', {center: [-14.2, -53.0], zoom: 4, minZoom: 3, maxZoom: 9});
@@ -262,33 +208,35 @@ function addEmojiMarkers() {
         marker.bindTooltip(`${dados.nome}<br><span style="color:${dados.cor}">${dados.produtos[0]}</span>`, { 
             direction: 'top', offset: [0, -28], className: 'cacd-tooltip' 
         });
+        stateMarkers[uf] = marker;
     });
     
     buildSidebar();
-    filter('all');
 }
 
 function addPortMarkers() {
+    portMarkers.forEach(m => { if(m.remove) m.remove(); });
+    portMarkers = [];
+    
     portos.forEach(porto => {
         const portIcon = L.divIcon({
             className: 'port-marker',
-            html: `<div style="font-size: 28px; cursor: pointer; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8)); text-align: center; background: rgba(26,30,58,0.6); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold);">🚢</div>`,
-            iconSize: [44, 44],
-            iconAnchor: [22, 22],
-            popupAnchor: [0, -18]
+            html: `<div style="font-size: 22px; cursor: pointer; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)); text-align: center; background: rgba(26,30,58,0.5); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold);">🚢</div>`,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18],
+            popupAnchor: [0, -15]
         });
         
         const marker = L.marker(porto.coords, { icon: portIcon, zIndexOffset: 200 }).addTo(map);
         
-        // Popup do porto
         const popupHTML = `
-            <div class="card-popup" style="min-width: 260px; max-width: 320px;">
-                <div class="card-titulo" style="font-size: 1.3rem; font-weight: bold; color: #c9a84c; margin-bottom: 6px; border-bottom: 2px solid #e2cbaa; display: inline-block;">🚢 ${porto.nome}</div>
-                <div class="card-produto" style="font-size: 0.85rem; background: rgba(201,168,76,0.15); display: inline-block; padding: 4px 12px; border-radius: 40px; margin: 10px 0 8px;">📍 ${porto.local}</div>
-                <div class="card-desc" style="margin: 12px 0; line-height: 1.45; font-size: 0.9rem;"><strong>📦 Produtos escoados:</strong> ${porto.produtos}</div>
-                <div class="card-infoextra" style="background: rgba(201,168,76,0.08); padding: 8px 12px; border-radius: 16px; font-size: 0.8rem; margin-top: 8px; border-left: 3px solid #c9a84c;">
+            <div style="min-width: 250px; max-width: 320px;">
+                <div style="font-size: 1.3rem; font-weight: bold; color: #c9a84c; margin-bottom: 6px; border-bottom: 2px solid #e2cbaa; display: inline-block;">🚢 ${porto.nome}</div>
+                <div style="font-size: 0.85rem; background: rgba(201,168,76,0.15); display: inline-block; padding: 4px 12px; border-radius: 40px; margin: 10px 0 8px;">📍 ${porto.cidade}, ${porto.estado}</div>
+                <div style="margin: 12px 0; line-height: 1.45; font-size: 0.9rem;"><strong>📦 Produtos escoados:</strong> ${porto.produtos}</div>
+                <div style="background: rgba(201,168,76,0.08); padding: 8px 12px; border-radius: 16px; font-size: 0.8rem; margin-top: 8px; border-left: 3px solid #c9a84c;">
                     <strong>📖 Contexto:</strong> ${porto.descricao}<br><br>
-                    <strong>🔎 Importância estratégica:</strong> ${porto.importancia}
+                    <strong>🔎 Importância:</strong> ${porto.importancia}
                 </div>
                 <div style="font-size:0.7rem; margin-top:8px; text-align:right; color:#8b6b3c;">⏳ 1808–1821 | Brasil Joanino</div>
             </div>
@@ -296,8 +244,9 @@ function addPortMarkers() {
         
         marker.bindPopup(popupHTML, { className: 'custom-popup', maxWidth: 340, minWidth: 260 });
         marker.bindTooltip(`${porto.nome}<br>🎯 ${porto.produtos.split(',')[0]}`, { 
-            direction: 'top', offset: [0, -24], className: 'cacd-tooltip' 
+            direction: 'top', offset: [0, -20], className: 'cacd-tooltip' 
         });
+        portMarkers.push(marker);
     });
 }
 
@@ -341,10 +290,38 @@ function closePopup() { document.getElementById('overlay').classList.remove('ope
 function closeIfBg(e) { if (e.target === document.getElementById('overlay')) closePopup(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
 
+function filterPorts() {
+    document.querySelectorAll('.produto-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('btn-portos');
+    if(btn) btn.classList.add('active');
+    currentFilter = 'portos';
+    
+    // Esconder todos os marcadores de estado
+    Object.values(stateMarkers).forEach(m => { if(m.remove) m.remove(); });
+    // Mostrar todos os portos
+    portMarkers.forEach(m => m.addTo(map));
+    
+    document.querySelectorAll('.si').forEach(el => { el.classList.add('hidden'); });
+    document.getElementById('count').textContent = portMarkers.length;
+    
+    // Ajustar zoom para ver os portos no oceano
+    map.setView([-15, -42], 4.5);
+}
+
 function filter(grupo) {
     document.querySelectorAll('.produto-btn').forEach(b => b.classList.remove('active'));
     const btn = document.getElementById(`btn-${grupo === 'all' ? 'all' : grupo}`);
-    if (btn) btn.classList.add('active');
+    if(btn) btn.classList.add('active');
+    currentFilter = grupo;
+    
+    // Mostrar/Esconder marcadores de estado
+    Object.entries(stateMarkers).forEach(([uf, m]) => {
+        const dados = dadosEconomicos[uf];
+        const show = grupo === 'all' || dados.grupo === grupo;
+        if(show) { m.addTo(map); } else { m.remove(); }
+    });
+    // Esconder todos os portos
+    portMarkers.forEach(m => { if(m.remove) m.remove(); });
     
     document.querySelectorAll('.si').forEach(el => {
         el.classList.toggle('hidden', grupo !== 'all' && el.dataset.grupo !== grupo);
