@@ -21,8 +21,7 @@ header{background:#090d12;border-bottom:2px solid var(--gold);padding:10px 20px;
 .map-wrap{flex:1;overflow:auto;background:#0a1520;display:flex;align-items:flex-start;justify-content:center;padding:8px;position:relative}
 .map-container{position:relative;display:inline-block}
 #map-svg{height:calc(100vh - 116px);width:auto;display:block;flex-shrink:0}
-.map-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(10,5,25,0.75);opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:5}
-.map-overlay.active{opacity:1}
+.map-overlay{display:none}/* substituído por rect SVG */
 #tord-overlay{pointer-events:none;z-index:10}
 #tord-overlay line{stroke:#d4a843;stroke-width:2.5;stroke-dasharray:14,7;opacity:1}
 #tord-overlay line.outline{stroke:#b8892a;stroke-width:6;stroke-dasharray:14,7;opacity:0.35}
@@ -99,8 +98,8 @@ header{background:#090d12;border-bottom:2px solid var(--gold);padding:10px 20px;
       <svg id="map-svg" viewBox="0 0 1105 1092" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <image href="mapa_brasil.png" x="0" y="0" width="1105" height="1092" preserveAspectRatio="none"/>
         <g id="tord-overlay" style="display:none">
-
-          <!-- ── LINHA DE TORDESILHAS: glow triplo para máxima visibilidade ── -->
+          <!-- ── OVERLAY DE ESCURECIMENTO dentro do SVG (fica abaixo da linha/textos) ── -->
+          <rect id="svg-map-overlay" x="0" y="0" width="1105" height="1092" fill="rgba(10,5,25,0.75)"/>
           <!-- camada 1: glow largo branco -->
           <line x1="635" y1="0" x2="635" y2="1092" stroke="white" stroke-width="14" stroke-dasharray="18,9" opacity="0.08"/>
           <!-- camada 2: glow roxo médio -->
@@ -239,10 +238,8 @@ function toggleTord() {
   tordOn = !tordOn;
   const btn = document.getElementById('tordBtn');
   const overlay = document.getElementById('tord-overlay');
-  const mapOverlay = document.getElementById('mapOverlay');
   btn.classList.toggle('on', tordOn);
   overlay.style.display = tordOn ? 'block' : 'none';
-  mapOverlay.classList.toggle('active', tordOn);
 }
 </script>
 </body>
