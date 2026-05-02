@@ -75,6 +75,8 @@ header{background:var(--bg2);border-bottom:2px solid var(--gold);padding:10px 20
 .dsub{font-size:.65rem;color:var(--muted);letter-spacing:.04em}
 .dclose{position:absolute;top:15px;right:18px;background:transparent;border:1px solid var(--border);color:var(--muted);width:25px;height:25px;cursor:pointer;font-size:.68rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .dclose:hover{border-color:var(--gold);color:var(--gold)}
+.integra-btn{display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:8px 16px;background:var(--gold-dim);border:1.5px solid var(--gold);color:var(--gold);text-decoration:none;transition:all .2s;cursor:pointer}
+.integra-btn:hover{background:rgba(212,168,67,.25);box-shadow:0 0 14px rgba(212,168,67,.2)}
 
 .dtabs{display:none;border-bottom:1px solid var(--border);background:var(--bg2);overflow-x:auto;scrollbar-width:none}
 .dtabs.on{display:flex}
@@ -161,6 +163,9 @@ header{background:var(--bg2);border-bottom:2px solid var(--gold);padding:10px 20
       <div class="deyebrow" id="deyebrow"></div>
       <div class="dtitle"   id="dtitle"></div>
       <div class="dsub"     id="dsub"></div>
+      <a class="integra-btn" id="integraBtn" href="#" target="_blank" rel="noopener">
+        📄 Ler constituição na íntegra — Planalto.gov.br
+      </a>
       <button class="dclose" onclick="fechar()">✕</button>
     </div>
     <div class="dtabs" id="dtabs"></div>
@@ -177,6 +182,7 @@ header{background:var(--bg2);border-bottom:2px solid var(--gold);padding:10px 20
 var DATA = [
   {
     id:"c1824",ano:"1824",tipo:"out",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao24.htm",
     nome:"Constituição do Império",
     vig:"1824 – 1891  ·  67 anos",
     pres:"D. Pedro I (Imperador)",
@@ -206,6 +212,7 @@ var DATA = [
   },
   {
     id:"c1891",ano:"1891",tipo:"prom",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao91.htm",
     nome:"Constituição da República",
     vig:"1891 – 1930  ·  39 anos",
     pres:"Marechal Deodoro da Fonseca (1º Presidente)",
@@ -235,6 +242,7 @@ var DATA = [
   },
   {
     id:"c1934",ano:"1934",tipo:"prom",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao34.htm",
     nome:"Constituição da 2ª República",
     vig:"1934 – 1937  ·  3 anos",
     pres:"Getúlio Vargas",
@@ -263,6 +271,7 @@ var DATA = [
   },
   {
     id:"c1937",ano:"1937",tipo:"out",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao37.htm",
     nome:"Constituição do Estado Novo",
     vig:"1937 – 1945  ·  8 anos (nunca plenamente vigente)",
     pres:"Getúlio Vargas",
@@ -293,6 +302,7 @@ var DATA = [
   },
   {
     id:"c1946",ano:"1946",tipo:"prom",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao46.htm",
     nome:"Constituição Democrática",
     vig:"1946 – 1967  ·  21 anos",
     pres:"General Eurico Gaspar Dutra (primeiro presidente sob a nova carta)",
@@ -322,6 +332,7 @@ var DATA = [
   },
   {
     id:"c1967",ano:"1967",tipo:"out",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao67.htm",
     nome:"Constituição do Regime Militar",
     vig:"1967 – 1988  ·  21 anos",
     pres:"Marechal Humberto Castelo Branco",
@@ -352,6 +363,7 @@ var DATA = [
   },
   {
     id:"c1988",ano:"1988",tipo:"prom",
+    link:"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
     nome:"Constituição Cidadã",
     vig:"1988 – presente  ·  36+ anos",
     pres:"José Sarney",
@@ -430,6 +442,8 @@ function open(id){
   document.getElementById('dtitle').innerHTML =
     c.nome.replace('Constituição','<em>Constituição</em>');
   document.getElementById('dsub').textContent = c.sub;
+  var btn = document.getElementById('integraBtn');
+  btn.href = c.link;
   document.getElementById('dhdr').className = 'dhdr on';
   document.getElementById('dtabs').className = 'dtabs on';
 
