@@ -125,10 +125,10 @@
     gap: 1.8rem;
     margin-bottom: 1.8rem;
   }
-  .row-2   { grid-template-columns: 1fr 1fr; }
-  .row-1c  { grid-template-columns: 1fr; max-width: 600px; margin-left: auto; margin-right: auto; }
+  .row-2   { grid-template-columns: 1fr 1fr 1fr; }
+  .row-1c  { grid-template-columns: 1fr 1fr 1fr; }
   .row-3   { grid-template-columns: 1fr 1fr 1fr; }
-  .row-1s  { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; margin-bottom: 0; }
+  .row-1s  { grid-template-columns: 1fr 1fr 1fr; margin-bottom: 0; }
 
   /* ── CARD BASE ── */
   .project-card {
@@ -257,11 +257,10 @@
 
   /* ── RESPONSIVO ── */
   @media (max-width: 860px) {
-    .row-3 { grid-template-columns: 1fr 1fr; }
+    .row-2, .row-1c, .row-3, .row-1s { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 580px) {
-    .row-2, .row-3 { grid-template-columns: 1fr; }
-    .row-1c, .row-1s { max-width: 100%; }
+    .row-2, .row-1c, .row-3, .row-1s { grid-template-columns: 1fr; }
     .about-section { padding: 1.6rem 1.4rem; }
     .author-section { grid-template-columns: 1fr; }
     .author-avatar { margin: 0 auto; }
@@ -309,8 +308,8 @@
   <!-- PROJECTS -->
   <div class="projects-heading"><h2>Instrumentos disponíveis</h2></div>
 
-  <!-- LINHA A: 2 cards -->
-  <div class="grid-row row-2">
+  <!-- LINHA A: 3 cards -->
+  <div class="grid-row row-3">
 
     <!-- 1 · Brasil no Mundo -->
     <a href="https://caiosoares1899.github.io/cacd.html/brasilnomundo"
@@ -346,14 +345,9 @@
       </div>
     </a>
 
-  </div><!-- /linha A -->
-
-  <!-- LINHA B: destaque central -->
-  <div class="grid-row row-1c">
-
     <!-- 3 · Capitanias Hereditárias -->
     <a href="https://caiosoares1899.github.io/cacd.html/capitanias.html"
-       class="project-card card-featured" target="_blank">
+       class="project-card" target="_blank">
       <div class="card-preview">
         <iframe src="https://caiosoares1899.github.io/cacd.html/capitanias.html"
                 loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
@@ -368,9 +362,9 @@
       </div>
     </a>
 
-  </div><!-- /linha B -->
+  </div><!-- /linha A -->
 
-  <!-- LINHA C: 3 cards -->
+  <!-- LINHA B: 3 cards -->
   <div class="grid-row row-3">
 
     <!-- 4 · Presidentes -->
@@ -424,10 +418,10 @@
       </div>
     </a>
 
-  </div><!-- /linha C -->
+  </div><!-- /linha B -->
 
-  <!-- LINHA D: solo -->
-  <div class="grid-row row-1s">
+  <!-- LINHA C: solo (expansão alinhada à esquerda) -->
+  <div class="grid-row row-3">
 
     <!-- 7 · Expansão Territorial -->
     <a href="https://caiosoares1899.github.io/cacd.html/brasil_tratados.html"
@@ -446,7 +440,7 @@
       </div>
     </a>
 
-  </div><!-- /linha D -->
+  </div><!-- /linha C -->
 
   <!-- SEPARATOR -->
   <div class="ornament-sep" aria-hidden="true"><span>✦ ✦ ✦</span></div>
